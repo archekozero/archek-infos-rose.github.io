@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rose – avancement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#000;--card:#0f0a16;--ink:#f6ebdd;--soft:#b9a9c8;--line:#3a2c50;--orange:#f39a45;--pink:#f08ab8;--ok:#6fd49c;--wip:#f3b45f;--plan:#b9a9c8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#000;--card:#0f0a16}}
+:root[data-theme="dark"]{--bg:#000;--card:#0f0a16;--ink:#f6ebdd;--soft:#b9a9c8;--line:#42325a;--orange:#f39a45;--pink:#f08ab8;--ok:#6fd49c;--wip:#f3b45f;--plan:#b9a9c8}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.6 Nunito,system-ui,sans-serif}
+main{position:relative;z-index:1;max-width:46rem;margin:0 auto;padding:1.5rem 1.25rem 3rem}
+#sky{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.st{position:absolute;width:4px;height:4px;background:var(--c);opacity:.85}
+.st.x{box-shadow:4px 0 var(--c),-4px 0 var(--c),0 4px var(--c),0 -4px var(--c)}
+.st{transition:opacity .25s linear}
+a{color:var(--pink)}
+a:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+h1,h2{font-family:"Pixelify Sans",ui-monospace,monospace;font-weight:700;line-height:1.15;margin:0}
+h1{font-size:clamp(2.4rem,9vw,3.6rem)}
+h2{font-size:1.5rem;margin:2.5rem 0 .75rem}
+.hero{display:flex;gap:1.25rem;align-items:flex-end;margin-top:1.25rem}
+.hero .rose{width:110px;height:135px;flex:none;image-rendering:pixelated;}
+.bubble{position:relative;background:var(--card);border:2px solid var(--ink);padding:.75rem 1rem;max-width:22rem}
+.bubble::before{content:"";position:absolute;left:-10px;bottom:14px;width:14px;height:14px;background:var(--card);border-left:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:rotate(45deg)}
+.bubble b{font-family:"Pixelify Sans",ui-monospace,monospace;font-size:1.6rem;color:var(--pink)}
+.bar{height:14px;border:2px solid var(--ink);background:var(--card);margin-top:.4rem}
+.bar i{display:block;height:100%;background:repeating-linear-gradient(90deg,var(--orange) 0 10px,var(--pink) 10px 20px)}
+.lead{color:var(--soft);margin:1rem 0 0;max-width:36rem}
+ul{list-style:none;margin:0;padding:0}
+li.it{display:flex;gap:.9rem;justify-content:space-between;align-items:flex-start;padding:.85rem 0;border-bottom:1px solid var(--line)}
+li.it strong{display:block}
+li.it span.d{color:var(--soft);font-size:.92rem}
+.tag{flex:none;font-weight:600;font-size:.85rem;border:2px solid currentColor;padding:.1rem .55rem;white-space:nowrap}
+.actif{color:var(--ok)}.wip{color:var(--wip);border-style:dashed}.plan{color:var(--plan);border-style:dotted}
+.log li{padding:.6rem 0;border-bottom:1px solid var(--line)}
+.log time{font-weight:600;margin-right:.6rem}
+footer{margin-top:2.5rem}
+</style>
+</head>
+<body>
+<div id="sky" aria-hidden="true"></div>
+<main>
+<a href="https://archekozero.github.io/archek-infos.github.io/">← Retour à mon site</a>
+
+<div class="hero">
+<img class="rose" alt="Rose, petit personnage en pixel art aux cheveux orange et au pull rose" width="110" height="135" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAG4AAACHCAYAAAD3EGyxAAAESklEQVR4nO2dMWhTQRzGL00tFiKtFNGGmkJSxGJxbZ2ETtahW3FwdHQRdNOxowUXR8cO4ubQdrHQyXYSRNBBg7XSKiJaDFTUNA7lldyR3OVy7727L+/7Tb2+l/cu78f/vty9vDY3duaCIHj0+e4A6Q6KA4XiQKE4UCgOFIoDheJAoThQKA4UigOF4kChOFAoDhSKA4XiQKE4UCgOFHhxpUq54bsPPoAXl1WgxZUq5ca1B6uZrDpocVmG4kCBFRcNk0IIkcXhElJcO0lZkpdD+UJss5So0lqxtjh3/POnD9Vcsr3yR/DiImE6We2IJPaiwODFRbDiZGDENdOqCnu5uloB+eGknZysSBMCVJwQR5KiKltbnMuUNCGAxWUdigMF8sNJM6VKuZG1YVIIVhws8BWXVfp9d8DE7vf3TuuPxZGJnhxGOVSCQnGgUBwo3jPOlGH1Zzedjp9fWNYeHzUDWXGgUBwoFAdK4hNw9wz7bdh+0q5DCvmFZe32UDOQFQcKxYFCcaDEnnFqprlnmAm3jDOhZmAomceKA4XiQKE4UJwzzpxprhmmkmymmQgl81hxoFAcKBQHSgL34+LONNIKVhwoFAcKxYESe8ZtLL2S2lfvXjG8Itn7ba5sLL30ev52sOJAoThQKA4U54xT1+pmN+W1y8l7A9L+j0f/SG1zBiaLKcNu7w1ot/uCFQcKxYFCcaDE/p2ToUK/0/NsagbObla1+6/PlLXbbV9vm2n7tX+8H0c6h+JAoThQYl+rfLv9TmpPTU9r969/2bc6/vaPX1K78XBGv/+qvP/46VNW51NR319xZMLpeN3CigOF4kChOFC8PwNu4uP9S1LblGkq6v7q8aovDrrrmGdYcaBQHCgUB4r3jMufG1J+881LP9BgxYFCcaBQHCiJZ9ybrS2pbVq7VO+frQv9/TZX1PNNjl+U2i3WJvkMOOkeigOF4kCJ/RnwR2O3tPvP5/aczqeSf/1Uu71++YbV8Z43RrXb73x+IrX5DDixguJAoThQvK9V+saUaaHCigOF4kChOFAS/3uV6rzOdR5nmrftTs5L7bMnBp3OV95ZkdpcqyROUBwoFAdK4vO4uNcmyRGsOFAoDhSKAyX1/61TPX/d6vW28zYV23lcqPM2FVYcKBQHCsWBkvg8Ts2I8s6KNvO+/pWfVys6nl89nuvaZSiw4kChOFAoDpTE53EmTP9DNW1CnbepsOJACfpbXoVCwfkYtVothp6ER+JD5c+DXe1Q2NcXVtEfHh4e/zw8WAx22HSuOJMYE80XSgh7kXG/vhnTe/Mp1lqcq6heQr0WaYrsWByFmYmuURoCOxpXKM2ONK5XRxU3PFjMpSVPlzlpvD4O0qi4jofKqDOsvvYEmXERaueyLBLqU6WKqfPIYnt6HmfC5c3HIT3ki+9C0EtevXrR4yCs9SbSMRQHCsWBQnGgUBwoFAcKxYFCcaBQHCj/AbZHKgsIOQuJAAAAAElFTkSuQmCC">
+<div class="bubble">
+<b id="pct">0 %</b> de mon plan est en place.
+<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="bar"><i id="fill" style="width:0"></i></div>
+</div>
+</div>
+
+<h1>Rose</h1>
+<p class="lead">Assistante IA vocale. Cette page montre ce qu’elle sait faire, à quoi elle est connectée et où en est son développement.</p>
+
+<h2>Ce qu’elle sait faire</h2>
+<ul id="caps"></ul>
+
+<h2>Ses connexions</h2>
+<ul id="conns"></ul>
+
+<h2>Journal</h2>
+<ul id="log" class="log"></ul>
+
+<footer><a href="https://archekozero.github.io/archek-infos.github.io/">← Retour à mon site</a></footer>
+</main>
+
+<script>
+// ÉDITE ICI : statut = "actif" | "wip" (en cours) | "plan" (prévu)
+var CAPS=[
+ {n:"Comprendre la voix",d:"Reconnaissance vocale en local.",s:"actif"},
+ {n:"Exécuter une commande",d:"Tu parles, elle agit sur le PC.",s:"actif"},
+ {n:"Se balader sur le bureau",d:"Personnage en pixel art qui vit sur ton écran.",s:"actif"},
+ {n:"Conversation continue",d:"Elle reste à l’écoute après sa réponse.",s:"actif"},
+ {n:"Rose sous clé",d:"Une clé qui la lance sur n’importe quel système.",s:"plan"}
+];
+var CONNS=[
+ {n:"Vosk",d:"Moteur de reconnaissance vocale.",s:"actif"},
+ {n:"IA de conversation (clé API)",d:"Génère les réponses de la conversation continue.",s:"actif"},
+ {n:"iPhone (Raccourcis)",d:"Rose se connecte au téléphone via un raccourci.",s:"actif"},
+ {n:"Android",d:"Même connexion pour les téléphones Android.",s:"wip"}
+];
+var LOG=[
+ {t:"2026-11-12",x:"Code relu et corrigé."},
+ {t:"2026-11-12",x:"Conversation continue et connexion iPhone en place, Android en cours."},
+ {t:"2026-11-12",x:"Création de cette page d’avancement."}
+];
+var L={actif:"Actif",wip:"En cours",plan:"Prévu"};
+function item(o){return '<li class="it"><div><strong>'+o.n+'</strong><span class="d">'+o.d+'</span></div><span class="tag '+o.s+'">'+L[o.s]+'</span></li>'}
+document.getElementById("caps").innerHTML=CAPS.map(item).join("");
+document.getElementById("conns").innerHTML=CONNS.map(item).join("");
+document.getElementById("log").innerHTML=LOG.slice().reverse().map(function(e){
+ var d=new Date(e.t+"T12:00:00");
+ return '<li><time datetime="'+e.t+'">'+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"})+'</time>'+e.x+'</li>'}).join("");
+var all=CAPS.concat(CONNS),pts=all.reduce(function(a,o){return a+(o.s==="actif"?1:o.s==="wip"?.5:0)},0);
+var p=Math.round(100*pts/all.length);
+document.getElementById("pct").textContent=p+" %";
+document.getElementById("fill").style.width=p+"%";
+document.getElementById("bar").setAttribute("aria-valuenow",p);
+var sky=document.getElementById("sky"),seed=7,cols=["var(--orange)","var(--pink)","var(--ink)","var(--soft)"];
+function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647}
+for(var i=0;i<46;i++){var e=document.createElement("span"),k=rnd();
+ e.className="st"+(k<.3?" x":"");
+ e.style.left=Math.round(rnd()*98)+"%";e.style.top=Math.round(rnd()*98)+"%";
+ e.style.setProperty("--c",cols[Math.floor(rnd()*4)]);
+ e._p=rnd()*6.28;e._f=.004+rnd()*.009;sky.appendChild(e)}
+// scintillement piloté par le défilement
+var stars=[].slice.call(sky.children),busy=false;
+function twinkle(){busy=false;var y=window.scrollY||0;stars.forEach(function(e){e.style.opacity=(.15+.85*Math.abs(Math.sin(y*e._f+e._p))).toFixed(2)})}
+twinkle();
+if(!window.matchMedia("(prefers-reduced-motion:reduce)").matches){window.addEventListener("scroll",function(){if(!busy){busy=true;requestAnimationFrame(twinkle)}},{passive:true})}
+</script>
+</body>
+</html>
