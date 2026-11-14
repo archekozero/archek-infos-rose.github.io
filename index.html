@@ -85,7 +85,7 @@ footer{margin-top:2.5rem}
 <h2>Journal</h2>
 <ul id="log" class="log"></ul>
 
-<h2>Le reste de mon site</h2><ul class="log"><li><a href="https://archekozero.github.io/archek-infos.github.io/">Accueil</a></li><li><a href="https://archekozero.github.io/parcours/">Parcours</a></li><li><a href="https://archekozero.github.io/archek-conviction/">Mes convictions</a></li><li><a href="https://archekozero.github.io/archek-cyberdeck/">Cyberdeck</a></li><li><a href="https://archekozero.github.io/archek-cle/">Rose sous clé</a></li><li><a href="https://archekozero.github.io/archek-ia/">Une vraie IA</a></li><li><a href="https://archekozero.github.io/archek-mention-l-gal/">Mentions légales</a></li></ul><footer><a href="https://archekozero.github.io/archek-infos.github.io/">← Retour à mon site</a></footer>
+<h2>Le reste de mon site</h2><ul class="log"><li><a href="https://archekozero.github.io/archek-infos.github.io/">Accueil</a></li><li><a href="https://archekozero.github.io/archek-infos.github.io/#beta">Devenir bêta testeur</a></li><li><a href="https://archekozero.github.io/parcours/">Parcours</a></li><li><a href="https://archekozero.github.io/archek-conviction/">Mes convictions</a></li><li><a href="https://archekozero.github.io/archek-cyberdeck/">Cyberdeck</a></li><li><a href="https://archekozero.github.io/archek-cle/">Rose sous clé</a></li><li><a href="https://archekozero.github.io/archek-ia/">Une vraie IA</a></li><li><a href="https://archekozero.github.io/archek-mention-l-gal/">Mentions légales</a></li></ul><footer><a href="https://archekozero.github.io/archek-infos.github.io/">← Retour à mon site</a></footer>
 </main>
 
 <script>
@@ -107,7 +107,11 @@ var LOG=[
  {t:"2026-11-12",x:"Code relu et corrigé."},
  {t:"2026-11-12",x:"Conversation continue et connexion iPhone en place, Android en cours."},
  {t:"2026-11-12",x:"Création de cette page d’avancement."},
- {t:"2026-11-13",x:"Ajout de la démo animée sur le bureau (étoile bleue, orange, verte, Spotify)."}
+ {t:"2026-11-13",x:"Ajout de la démo animée sur le bureau (étoile bleue, orange, verte, Spotify)."},
+ {t:"2026-11-14",x:"Pose de dos (mode ne pas déranger) : la veste est maintenant reconnue par sa teinte et change de couleur comme de face. À vérifier au prochain lancement."},
+ {t:"2026-11-14",x:"Ouverture d’applications : si le nom exact n’est pas reconnu, Rose compare par le son (« disque or » devient Discord, « crome » devient Chrome). Si rien ne ressemble, elle le dit au lieu de rester muette."},
+ {t:"2026-11-14",x:"Fin des conversations dans le vide : Rose ignore le bruit, s’arrête après 3 tours sans qu’on dise « Rose », et se tait d’un clic, ou avec « chut », « tais-toi », « ça suffit »."},
+ {t:"2026-11-14",x:"Réglages : un bouton fait défiler les voix françaises installées, et un fichier corrections.txt apprend à Rose ce qu’elle entend de travers."}
 ];
 var L={actif:"Actif",wip:"En cours",plan:"Prévu"};
 function item(o){return '<li class="it"><div><strong>'+o.n+'</strong><span class="d">'+o.d+'</span></div><span class="tag '+o.s+'">'+L[o.s]+'</span></li>'}
