@@ -17,6 +17,13 @@ button.alt{background:transparent;color:var(--ink)}button.del{background:transpa
 .code{font:700 2.6rem "Pixelify Sans",monospace;letter-spacing:.15em;color:var(--pink);margin:.5rem 0}
 .row{display:flex;justify-content:space-between;gap:1rem;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--line)}
 .ev{margin:0 0 1rem}.ev img{display:block;width:100%;height:auto;border:2px solid var(--ink);margin-top:.5rem;cursor:zoom-in;background:#000}.ev time{color:var(--soft);font-size:.9rem}
+.chat{display:flex;flex-direction:column;gap:.6rem;max-height:28rem;overflow-y:auto;padding:.25rem 0;margin-bottom:.5rem}
+.bub{max-width:85%;padding:.5rem .75rem;border:2px solid var(--ink);white-space:pre-wrap;overflow-wrap:anywhere}.bub small{display:block;font-size:.8rem;opacity:.75}
+.me{align-self:flex-end;background:var(--orange);color:#000}.her{align-self:flex-start;background:#1c1328;border-color:var(--pink)}
+.her img{display:block;width:100%;height:auto;margin-top:.4rem;border:1px solid var(--ink);cursor:zoom-in}
+.send{display:flex;gap:.5rem;align-items:stretch}.send input{flex:1}.send button{margin:0}
+select{font:inherit;color:var(--ink);background:#000;border:2px solid var(--ink);padding:.4rem .5rem;max-width:100%}
+.on{color:var(--ok)}.off{color:var(--soft)}
 #zoom{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:1rem;z-index:9}#zoom img{max-width:100%;max-height:100%;border:2px solid var(--ink)}
 </style></head><body><main>
 <a href="./">← Avancement de Rose</a>
@@ -41,6 +48,12 @@ button.alt{background:transparent;color:var(--ink)}button.del{background:transpa
 <div id="pairBox" class="hide"><div class="code" id="code" aria-live="polite"></div>
 <p class="soft">Sur ton PC, clic droit sur l’icône de Rose → « Lier à mon compte (téléphone)… », puis tape ce code (ou écris « lier CODE » dans sa bulle). Il expire dans <strong id="left"></strong>.</p></div>
 <p id="pmsg" class="msg" role="status"></p></section>
+<section class="card" id="talk"><h2>Parler à Rose</h2>
+<p class="soft">Écris un ordre (« ouvre Spotify », « mets un minuteur de 5 minutes ») ou une question : Rose l’exécute sur ton PC comme si tu le tapais, et te répond ici.</p>
+<div class="row" style="border:0;padding-top:0"><label for="target" style="margin:0">Ordinateur</label><select id="target"></select><span id="online" class="off" aria-live="polite"></span></div>
+<div id="chat" class="chat" aria-live="polite"></div>
+<form id="sendForm" class="send"><input id="msg" maxlength="500" autocomplete="off" placeholder="Écris à Rose…" aria-label="Message pour Rose"><button id="sendBtn" type="submit">Envoyer</button></form>
+<p id="tmsg" class="msg" role="status"></p></section>
 <section class="card"><h2>Ce que Rose a fait</h2><div id="feed"></div><button id="clearBtn" class="del">Tout supprimer</button></section>
 <p class="soft">Les captures sont privées (visibles par toi seul), supprimées automatiquement après 7 jours, et supprimables à tout moment. Évite d’exécuter des ordres devant des informations sensibles.</p>
 </div>
@@ -55,7 +68,7 @@ function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null
 function fmt(t){return new Date(t).toLocaleString("fr-FR",{dateStyle:"medium",timeStyle:"short"})}
 if(CONFIG.SUPABASE_URL.indexOf("VOTRE")>-1){$("setup").classList.remove("hide")}else{start()}
 function start(){
-var sb=supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_ANON_KEY),uid=null,names={},chan=null,poll=null,tick=null;
+var sb=supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_ANON_KEY),uid=null,names={},roses=[],rosesT=null,chan=null,poll=null,tick=null;
 function view(v){["auth","recover","app"].forEach(function(i){$(i).classList.toggle("hide",i!==v)})}
 function route(s){if(s&&s.user){if(uid!==s.user.id){uid=s.user.id;$("who").textContent=s.user.email;view("app");load()}else view("app")}else{uid=null;stopAll();view("auth")}}
 sb.auth.onAuthStateChange(function(ev,s){if(ev==="PASSWORD_RECOVERY"){view("recover");return}route(s)});
@@ -69,13 +82,34 @@ $("setpw").onclick=function(){var p=$("np").value;if(p.length<12){say("rmsg","12
 sb.auth.updateUser({password:p}).then(function(r){if(r.error)say("rmsg",r.error.message,"err");else sb.auth.getSession().then(function(x){route(x.data.session)})})};
 $("logout").onclick=function(){sb.auth.signOut()};
 
-function loadRoses(){return sb.from("roses").select("id,name,last_seen").order("created_at").then(function(r){
-var box=$("roses"),l=r.data||[];box.textContent="";names={};
+function loadRoses(){return sb.from("roses").select("id,name,last_seen,last_poll").order("created_at").then(function(r){
+var box=$("roses"),l=r.data||[];box.textContent="";names={};roses=l;fillTarget();
 l.forEach(function(x){names[x.id]=x.name;var row=el("div","row"),d=el("div");d.appendChild(el("strong",null,x.name));
 d.appendChild(el("div","soft",x.last_seen?"Dernier ordre : "+fmt(x.last_seen):"Aucun ordre reçu pour l’instant"));row.appendChild(d);
 var b=el("button","del","Délier");b.onclick=function(){if(confirm("Délier « "+x.name+" » ? Rose ne pourra plus t’envoyer de captures."))sb.from("roses").delete().eq("id",x.id).then(loadRoses)};
 row.appendChild(b);box.appendChild(row)});
 if(!l.length)box.appendChild(el("p","soft","Aucun ordinateur lié pour l’instant."));return l})}
+function isOn(x){return x&&x.last_poll&&Date.now()-new Date(x.last_poll).getTime()<25e3}
+function fillTarget(){var t=$("target"),cur=t.value;t.textContent="";roses.forEach(function(x){var o=el("option",null,x.name+(isOn(x)?" ● en ligne":""));o.value=x.id;t.appendChild(o)});
+if(cur&&roses.some(function(x){return x.id===cur}))t.value=cur;$("talk").classList.toggle("hide",!roses.length);showOnline()}
+function showOnline(){var x=roses.filter(function(y){return y.id===$("target").value})[0],o=$("online");
+if(!x){o.textContent="";return}o.textContent=isOn(x)?"● Rose est en ligne":"○ Rose ne répond pas (PC éteint ou Rose fermée ?)";o.className=isOn(x)?"on":"off"}
+var ST={pending:"envoyé…",running:"Rose s’en occupe…",done:"",expired:"pas reçu à temps (Rose était fermée ?)"};
+function bubble(cls,text,meta){var b=el("div","bub "+cls,text);if(meta)b.appendChild(el("small",null,meta));return b}
+function loadChat(){if(!uid)return Promise.resolve();return sb.from("commands").select("id,rose_id,text,status,created_at").order("created_at",{ascending:false}).limit(25).then(function(r){
+var cmds=(r.data||[]).reverse(),ids=cmds.map(function(c){return c.id});
+var q=ids.length?sb.from("events").select("id,command_id,text,image_path,created_at").in("command_id",ids).order("created_at"):Promise.resolve({data:[]});
+return q.then(function(er){var evs=er.data||[];return signed(evs).then(function(m){var c=$("chat"),stick=c.scrollTop+c.clientHeight>=c.scrollHeight-40;c.textContent="";
+if(!cmds.length)c.appendChild(el("p","soft","Aucun message pour l’instant."));
+cmds.forEach(function(k){c.appendChild(bubble("me",k.text,fmt(k.created_at)+(names[k.rose_id]&&roses.length>1?" · "+names[k.rose_id]:"")+(ST[k.status]?" · "+ST[k.status]:"")));
+evs.filter(function(e){return e.command_id===k.id}).forEach(function(e){var b=bubble("her",e.text,fmt(e.created_at));var u=m[e.image_path];
+if(u){var i=el("img");i.src=u;i.alt="Capture d’écran : "+e.text;i.loading="lazy";i.onclick=function(){$("zimg").src=u;$("zoom").classList.remove("hide")};b.insertBefore(i,b.lastChild)}c.appendChild(b)})});
+if(stick||!c.dataset.ready){c.scrollTop=c.scrollHeight;c.dataset.ready=1}})})})}
+var chatT=null;function chatSoon(){clearTimeout(chatT);chatT=setTimeout(loadChat,300)}
+$("target").onchange=showOnline;
+$("sendForm").onsubmit=function(ev){ev.preventDefault();var t=$("msg").value.trim(),rid=$("target").value;if(!t||!rid)return;
+$("sendBtn").disabled=true;sb.from("commands").insert({rose_id:rid,text:t}).then(function(r){$("sendBtn").disabled=false;
+if(r.error){say("tmsg","Envoi impossible : "+r.error.message,"err");return}$("msg").value="";say("tmsg","","");$("chat").dataset.ready="";loadChat()})};
 function stopPair(){clearInterval(tick);clearInterval(poll);$("pairBox").classList.add("hide")}
 $("pairBtn").onclick=function(){stopPair();sb.rpc("create_pair_code").then(function(r){
 if(r.error){say("pmsg","Impossible de créer le code (limite de 5 ordinateurs ?).","err");return}
@@ -94,10 +128,10 @@ return sb.storage.from("captures").createSignedUrls(p,3600).then(function(r){var
 function loadFeed(){return sb.from("events").select("id,rose_id,text,image_path,created_at").order("created_at",{ascending:false}).limit(30).then(function(r){
 var l=r.data||[];return signed(l).then(function(m){var f=$("feed");f.textContent="";l.forEach(function(e){f.appendChild(card(e,m[e.image_path]))});
 if(!l.length)f.appendChild(el("p","soft","Rien pour l’instant : donne un ordre à Rose, sa capture arrivera ici."))})})}
-function listen(){if(chan)return;chan=sb.channel("rose-events").on("postgres_changes",{event:"INSERT",schema:"public",table:"events"},function(p){
-var e=p.new;signed([e]).then(function(m){var f=$("feed");if(f.firstChild&&f.firstChild.tagName==="P")f.textContent="";f.prepend(card(e,m[e.image_path]))})}).subscribe()}
-function load(){loadRoses().then(loadFeed).then(listen)}
-function stopAll(){stopPair();if(chan){sb.removeChannel(chan);chan=null}$("feed").textContent="";$("roses").textContent=""}
+function listen(){if(chan)return;chan=sb.channel("rose-events").on("postgres_changes",{event:"*",schema:"public",table:"commands"},chatSoon).on("postgres_changes",{event:"INSERT",schema:"public",table:"events"},function(p){
+var e=p.new;if(e.command_id)chatSoon();signed([e]).then(function(m){var f=$("feed");if(f.firstChild&&f.firstChild.tagName==="P")f.textContent="";f.prepend(card(e,m[e.image_path]))})}).subscribe()}
+function load(){loadRoses().then(loadFeed).then(loadChat).then(listen);clearInterval(rosesT);rosesT=setInterval(function(){loadRoses()},1e4)}
+function stopAll(){stopPair();clearInterval(rosesT);roses=[];$("chat").textContent="";if(chan){sb.removeChannel(chan);chan=null}$("feed").textContent="";$("roses").textContent=""}
 $("clearBtn").onclick=function(){if(!confirm("Supprimer toutes les captures ?"))return;
 sb.from("events").select("image_path").then(function(r){var p=(r.data||[]).map(function(x){return x.image_path}).filter(Boolean);
 return(p.length?sb.storage.from("captures").remove(p):Promise.resolve()).then(function(){return sb.from("events").delete().eq("user_id",uid)})}).then(loadFeed)};
