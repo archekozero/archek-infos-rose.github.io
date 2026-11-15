@@ -112,6 +112,7 @@ footer{margin-top:2rem;color:var(--soft);font-size:.9rem}
 <label for="target" style="margin-top:0">Ordinateur</label>
 <select id="target"></select>
 <p id="online" class="online off" aria-live="polite"><i></i><span></span></p>
+<button id="wakeBtn" class="hide" type="button">Allumer Rose</button>
 <div id="chat" class="chat" aria-live="polite"></div>
 <div class="sugg" aria-label="Exemples">
 <button type="button" data-say="Ouvre Chrome">Ouvre Chrome</button>
@@ -177,7 +178,8 @@ sb.auth.updateUser({password:p}).then(function(r){if(r.error)say("rmsg",r.error.
 $("logout").onclick=function(){sb.auth.signOut()};
 
 function isOn(x){return x&&x.last_poll&&Date.now()-new Date(x.last_poll).getTime()<25e3}
-function loadRoses(){return sb.from("roses").select("id,name,last_seen,last_poll").order("created_at").then(function(r){
+function canWake(x){return x&&x.last_wake_poll&&Date.now()-new Date(x.last_wake_poll).getTime()<25e3}
+function loadRoses(){return sb.from("roses").select("id,name,last_seen,last_poll,last_wake_poll").order("created_at").then(function(r){
 var box=$("roses"),l=r.data||[];box.textContent="";names={};roses=l;fillTarget();
 l.forEach(function(x){names[x.id]=x.name;var row=el("div","row"),d=el("div");d.appendChild(el("strong",null,x.name));
 d.appendChild(el("div","soft small",(isOn(x)?"● en ligne · ":"")+(x.last_seen?"dernier ordre : "+fmt(x.last_seen):"aucun ordre pour l’instant")));row.appendChild(d);
@@ -187,8 +189,9 @@ if(!l.length)box.appendChild(el("p","soft","Aucun ordinateur lié pour l’insta
 function fillTarget(){var t=$("target"),cur=t.value;t.textContent="";roses.forEach(function(x){var o=el("option",null,x.name);o.value=x.id;t.appendChild(o)});
 if(cur&&roses.some(function(x){return x.id===cur}))t.value=cur;$("talk").classList.toggle("hide",!roses.length);showOnline()}
 function showOnline(){var x=roses.filter(function(y){return y.id===$("target").value})[0],o=$("online");
-if(!x){o.classList.add("hide");return}o.classList.remove("hide");var on=isOn(x);o.className="online "+(on?"on":"off");
-o.querySelector("span").textContent=on?"Rose est en ligne":"Rose ne répond pas (PC éteint ou Rose fermée ?)"}
+var w=$("wakeBtn");if(!x){o.classList.add("hide");w.classList.add("hide");return}o.classList.remove("hide");var on=isOn(x),cw=!on&&canWake(x);o.className="online "+(on?"on":"off");
+o.querySelector("span").textContent=on?"Rose est en ligne":cw?"Rose est éteinte, mais ton PC peut l’allumer":"Rose ne répond pas (PC éteint, ou allumage à distance désactivé dans ses Réglages)";
+w.classList.toggle("hide",!cw||!!w.dataset.busy)}
 var ST={pending:"envoyé",running:"Rose s’en occupe…",done:"",expired:"pas reçu à temps (Rose était fermée ?)"};
 function line(who){var l=el("div","line "+who);if(who==="her"){var a=el("img","av");a.src=SPRITE;a.alt="";l.appendChild(a)}return l}
 function loadChat(){if(!uid)return Promise.resolve();return sb.from("commands").select("id,rose_id,text,status,created_at").order("created_at",{ascending:false}).limit(25).then(function(r){
@@ -208,10 +211,12 @@ d.appendChild(el("i"));d.appendChild(el("i"));d.appendChild(el("i"));b3.appendCh
 if(stick||!c.dataset.ready){c.scrollTop=c.scrollHeight;c.dataset.ready=1;c.dataset.stick="1"}else c.dataset.stick="0"})})})}
 var chatT=null;function chatSoon(){clearTimeout(chatT);chatT=setTimeout(loadChat,300)}
 $("target").onchange=showOnline;
-function send(t){var rid=$("target").value;if(!t||!rid)return;$("sendBtn").disabled=true;
-sb.from("commands").insert({rose_id:rid,text:t}).then(function(r){$("sendBtn").disabled=false;
+function send(t,kind){var rid=$("target").value;if(!t||!rid)return;$("sendBtn").disabled=true;
+sb.from("commands").insert({rose_id:rid,text:t,kind:kind||"order"}).then(function(r){$("sendBtn").disabled=false;
 if(r.error){say("tmsg","Envoi impossible : "+r.error.message,"err");return}$("msg").value="";say("tmsg","","");$("chat").dataset.ready="";loadChat()})}
 $("sendForm").onsubmit=function(ev){ev.preventDefault();send($("msg").value.trim())};
+$("wakeBtn").onclick=function(){var w=$("wakeBtn");w.dataset.busy="1";w.classList.add("hide");send("Allume-toi","wake");
+setTimeout(function(){delete w.dataset.busy;loadRoses()},45e3)};
 [].forEach.call(document.querySelectorAll(".sugg button"),function(b){b.onclick=function(){send(b.getAttribute("data-say"))}});
 
 function stopPair(){clearInterval(tick);clearInterval(poll);$("pairBox").classList.add("hide")}
