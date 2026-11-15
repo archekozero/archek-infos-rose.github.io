@@ -27,7 +27,8 @@ button.alt{background:transparent;color:var(--ink)}button.del{background:transpa
 <section id="auth" class="card hide"><h2>Mon compte</h2>
 <label for="em">E-mail</label><input id="em" type="email" autocomplete="email">
 <label for="pw">Mot de passe (12 caractères minimum)</label><input id="pw" type="password" autocomplete="current-password">
-<button id="login">Se connecter</button><button id="signup" class="alt">Créer un compte</button><button id="forgot" class="alt">Mot de passe oublié</button>
+<button id="signup">Créer mon compte</button><button id="login" class="alt">Se connecter</button>
+<p class="soft">Première fois ? Choisis un mot de passe ci-dessus puis « Créer mon compte ». <a href="#" id="forgot">Mot de passe oublié</a> (seulement si tu as déjà un compte).</p>
 <p id="amsg" class="msg" role="status"></p></section>
 
 <section id="recover" class="card hide"><h2>Nouveau mot de passe</h2>
@@ -62,8 +63,8 @@ function creds(){return{email:$("em").value.trim(),password:$("pw").value}}
 $("login").onclick=function(){sb.auth.signInWithPassword(creds()).then(function(r){if(r.error)say("amsg","Identifiants incorrects.","err")})};
 $("signup").onclick=function(){var c=creds();if(c.password.length<12){say("amsg","Mot de passe : 12 caractères minimum.","err");return}
 sb.auth.signUp({email:c.email,password:c.password,options:{emailRedirectTo:location.href.split("#")[0]}}).then(function(r){r.error?say("amsg","Création impossible : "+r.error.message,"err"):say("amsg","Compte créé : confirme ton adresse e-mail (vérifie ta boîte), puis connecte-toi.","ok")})};
-$("forgot").onclick=function(){var e=$("em").value.trim();if(!e){say("amsg","Saisis ton e-mail d’abord.","err");return}
-sb.auth.resetPasswordForEmail(e,{redirectTo:location.href.split("#")[0]}).then(function(){say("amsg","Si ce compte existe, un e-mail vient d’être envoyé.","ok")})};
+$("forgot").onclick=function(ev){ev.preventDefault();var e=$("em").value.trim();if(!e){say("amsg","Saisis ton e-mail d’abord.","err");return}
+sb.auth.resetPasswordForEmail(e,{redirectTo:location.href.split("#")[0]}).then(function(){say("amsg","Si ce compte existe, un e-mail vient d’être envoyé. Pas encore de compte ? Utilise « Créer mon compte ».","ok")})};
 $("setpw").onclick=function(){var p=$("np").value;if(p.length<12){say("rmsg","12 caractères minimum.","err");return}
 sb.auth.updateUser({password:p}).then(function(r){if(r.error)say("rmsg",r.error.message,"err");else sb.auth.getSession().then(function(x){route(x.data.session)})})};
 $("logout").onclick=function(){sb.auth.signOut()};
