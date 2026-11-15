@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Connexion à Rose depuis son téléphone</title>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#000;--card:#0f0a16;--ink:#f6ebdd;--soft:#b9a9c8;--line:#3a2c50;--orange:#f39a45;--pink:#f08ab8;--ok:#6fd49c;--bad:#ff7a7a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.6 Nunito,system-ui,sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+main{max-width:46rem;margin:0 auto;padding:1.5rem 1.25rem 3rem}a{color:var(--pink)}
+h1,h2{font-family:"Pixelify Sans",ui-monospace,monospace;line-height:1.15;margin:0}h1{font-size:clamp(1.8rem,7vw,2.8rem)}h2{font-size:1.4rem;margin:0 0 .75rem}
+.hero{display:flex;gap:1rem;align-items:flex-end;margin:1.25rem 0}.hero img{width:64px;height:96px;image-rendering:pixelated;flex:none}
+.card{background:var(--card);border:2px solid var(--ink);padding:1rem;margin:1.25rem 0}.soft{color:var(--soft)}.hide{display:none!important}
+label{display:block;font-weight:600;margin:.7rem 0 .2rem}input{width:100%;font:inherit;color:var(--ink);background:#000;border:2px solid var(--ink);padding:.55rem .7rem}
+button{font:600 1rem Nunito,sans-serif;color:#000;background:var(--orange);border:2px solid var(--ink);padding:.5rem 1rem;cursor:pointer;margin:.6rem .5rem 0 0}
+button.alt{background:transparent;color:var(--ink)}button.del{background:transparent;color:var(--bad);border-color:var(--bad)}
+:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+.msg{min-height:1.5em;margin:.6rem 0 0;font-weight:600}.msg.err{color:var(--bad)}.msg.ok{color:var(--ok)}
+.code{font:700 2.6rem "Pixelify Sans",monospace;letter-spacing:.15em;color:var(--pink);margin:.5rem 0}
+.row{display:flex;justify-content:space-between;gap:1rem;align-items:center;padding:.6rem 0;border-bottom:1px solid var(--line)}
+.ev{margin:0 0 1rem}.ev img{display:block;width:100%;height:auto;border:2px solid var(--ink);margin-top:.5rem;cursor:zoom-in;background:#000}.ev time{color:var(--soft);font-size:.9rem}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:1rem;z-index:9}#zoom img{max-width:100%;max-height:100%;border:2px solid var(--ink)}
+</style></head><body><main>
+<a href="./">← Avancement de Rose</a>
+<div class="hero"><img alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABgCAYAAACtxXToAAACk0lEQVR42u2cMUjDQBSGL1GkYGNQHCoKASdL3Ry0kyAiOjiJk5Ozbo46dtRNZycnEQcHi6jQqXYoLkqdxEwKCqKpKAWpU4ac9eLxcjlr/rell97lvrz/3XvXNIZt20yn5bL55nWtbOga32QJN1P33Z/dOGa5bL4JD0gaAP/uM8aYTi8wdU1e5nOVZsS5CvgT9O98KysW5hhjjMW1MsQC4DcT1wUCHqAjEWoFIu6Jaw2CP01SR0aobRm8rpUN/64XC3NMVzqc+ETIQDEED7AZaoEEW6fqATzPI+X3lmUZ8AAAAIC/GwPCNP65v0Tqv2Nxr6kyRkACAIBM0Fas8Y+Q9hQ1RpDyCEgAABADbKHm6RpnSmOAbIzgYwIkAABJjwGmaYZo/iPiIVNaJ8zHBEgAALAfwBRrHh4AAADQTjGgtHUZOJ5cy2ut96lW2irDAwAAAAj7AVlnJNC+M9CQjBF6Nb5y3xU4rrk38AAAAABBDBjqGyT9ns/HiKmLW+H55xPDwnbZ7/OahwcAAADI1QL8Ojk6Pi7s4PPhRWpA99kLHDc3J8TnHwfPd3ot0oSRB0ACABDvc4J36zkpzfPGn8/3d3v2Dg8AAADQGAM6MvwzRo/wAAAAgH+0J8hbWG1wValI1ftU4/cL+D1MPvfHM0KQAACInxHadnaFX5jv74n2Ck5nxO3TJ1LdHT29CttX3WV4AAAAQIz7AaotTPPwAAAAAFotwOcF5DwgZN1vjB4Gjrsy3aThnOoCagFIAAAIeUDkuT88AAAAoK3/O+yOHShd93mTzQPC1n14AAAAgFwewGvIqS4IY0Lj4S2oYeIFfuuPWBvAAwAAAKJ9mxz1XWFRm+x7hbAKqOw8nU6T3wRXr9eVetgXgBfaVdpW/wMAAAAASUVORK5CYII="><h1>Connexion à Rose depuis son téléphone</h1></div>
+<p class="soft">Crée ton compte, lie ton ordinateur, puis reçois ici une capture d’écran de chaque ordre que Rose exécute.</p>
+<p id="setup" class="card hide">Page pas encore configurée : renseigne <code>SUPABASE_URL</code> et <code>SUPABASE_ANON_KEY</code> dans le script.</p>
+
+<section id="auth" class="card hide"><h2>Mon compte</h2>
+<label for="em">E-mail</label><input id="em" type="email" autocomplete="email">
+<label for="pw">Mot de passe (12 caractères minimum)</label><input id="pw" type="password" autocomplete="current-password">
+<button id="login">Se connecter</button><button id="signup" class="alt">Créer un compte</button><button id="forgot" class="alt">Mot de passe oublié</button>
+<p id="amsg" class="msg" role="status"></p></section>
+
+<section id="recover" class="card hide"><h2>Nouveau mot de passe</h2>
+<label for="np">Nouveau mot de passe</label><input id="np" type="password" autocomplete="new-password"><button id="setpw">Enregistrer</button><p id="rmsg" class="msg" role="status"></p></section>
+
+<div id="app" class="hide">
+<div class="row"><span>Connecté : <strong id="who"></strong></span><button id="logout" class="alt">Se déconnecter</button></div>
+<section class="card"><h2>Mes ordinateurs</h2><div id="roses"></div>
+<button id="pairBtn">Lier un nouvel ordinateur</button>
+<div id="pairBox" class="hide"><div class="code" id="code" aria-live="polite"></div>
+<p class="soft">Sur ton PC, clic droit sur l’icône de Rose → « Lier à mon compte (téléphone)… », puis tape ce code (ou écris « lier CODE » dans sa bulle). Il expire dans <strong id="left"></strong>.</p></div>
+<p id="pmsg" class="msg" role="status"></p></section>
+<section class="card"><h2>Ce que Rose a fait</h2><div id="feed"></div><button id="clearBtn" class="del">Tout supprimer</button></section>
+<p class="soft">Les captures sont privées (visibles par toi seul), supprimées automatiquement après 7 jours, et supprimables à tout moment. Évite d’exécuter des ordres devant des informations sensibles.</p>
+</div>
+<div id="zoom" class="hide"><img id="zimg" alt="Capture agrandie"></div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+var CONFIG={SUPABASE_URL:"https://xluluwdlompuqaismeng.supabase.co",SUPABASE_ANON_KEY:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsdWx1d2Rsb21wdXFhaXNtZW5nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ3NjU0NTMsImV4cCI6MjExMDM0MTQ1M30.GCn0793MkHbC6cH6FJfHQfz3aiEHczqYw2Z_uUPNmW4"};
+var $=function(i){return document.getElementById(i)};
+function say(id,t,k){var e=$(id);e.textContent=t;e.className="msg "+(k||"")}
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function fmt(t){return new Date(t).toLocaleString("fr-FR",{dateStyle:"medium",timeStyle:"short"})}
+if(CONFIG.SUPABASE_URL.indexOf("VOTRE")>-1){$("setup").classList.remove("hide")}else{start()}
+function start(){
+var sb=supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_ANON_KEY),uid=null,names={},chan=null,poll=null,tick=null;
+function view(v){["auth","recover","app"].forEach(function(i){$(i).classList.toggle("hide",i!==v)})}
+function route(s){if(s&&s.user){if(uid!==s.user.id){uid=s.user.id;$("who").textContent=s.user.email;view("app");load()}else view("app")}else{uid=null;stopAll();view("auth")}}
+sb.auth.onAuthStateChange(function(ev,s){if(ev==="PASSWORD_RECOVERY"){view("recover");return}route(s)});
+function creds(){return{email:$("em").value.trim(),password:$("pw").value}}
+$("login").onclick=function(){sb.auth.signInWithPassword(creds()).then(function(r){if(r.error)say("amsg","Identifiants incorrects.","err")})};
+$("signup").onclick=function(){var c=creds();if(c.password.length<12){say("amsg","Mot de passe : 12 caractères minimum.","err");return}
+sb.auth.signUp({email:c.email,password:c.password,options:{emailRedirectTo:location.href.split("#")[0]}}).then(function(r){r.error?say("amsg","Création impossible : "+r.error.message,"err"):say("amsg","Compte créé : confirme ton adresse e-mail (vérifie ta boîte), puis connecte-toi.","ok")})};
+$("forgot").onclick=function(){var e=$("em").value.trim();if(!e){say("amsg","Saisis ton e-mail d’abord.","err");return}
+sb.auth.resetPasswordForEmail(e,{redirectTo:location.href.split("#")[0]}).then(function(){say("amsg","Si ce compte existe, un e-mail vient d’être envoyé.","ok")})};
+$("setpw").onclick=function(){var p=$("np").value;if(p.length<12){say("rmsg","12 caractères minimum.","err");return}
+sb.auth.updateUser({password:p}).then(function(r){if(r.error)say("rmsg",r.error.message,"err");else sb.auth.getSession().then(function(x){route(x.data.session)})})};
+$("logout").onclick=function(){sb.auth.signOut()};
+
+function loadRoses(){return sb.from("roses").select("id,name,last_seen").order("created_at").then(function(r){
+var box=$("roses"),l=r.data||[];box.textContent="";names={};
+l.forEach(function(x){names[x.id]=x.name;var row=el("div","row"),d=el("div");d.appendChild(el("strong",null,x.name));
+d.appendChild(el("div","soft",x.last_seen?"Dernier ordre : "+fmt(x.last_seen):"Aucun ordre reçu pour l’instant"));row.appendChild(d);
+var b=el("button","del","Délier");b.onclick=function(){if(confirm("Délier « "+x.name+" » ? Rose ne pourra plus t’envoyer de captures."))sb.from("roses").delete().eq("id",x.id).then(loadRoses)};
+row.appendChild(b);box.appendChild(row)});
+if(!l.length)box.appendChild(el("p","soft","Aucun ordinateur lié pour l’instant."));return l})}
+function stopPair(){clearInterval(tick);clearInterval(poll);$("pairBox").classList.add("hide")}
+$("pairBtn").onclick=function(){stopPair();sb.rpc("create_pair_code").then(function(r){
+if(r.error){say("pmsg","Impossible de créer le code (limite de 5 ordinateurs ?).","err");return}
+var c=r.data,end=Date.now()+6e5,n0=Object.keys(names).length;
+$("code").textContent=c.slice(0,4)+"-"+c.slice(4);$("pairBox").classList.remove("hide");say("pmsg","","");
+tick=setInterval(function(){var s=Math.max(0,Math.round((end-Date.now())/1e3));$("left").textContent=Math.floor(s/60)+":"+("0"+s%60).slice(-2);if(!s){stopPair();say("pmsg","Code expiré, génères-en un nouveau.","err")}},1e3);
+poll=setInterval(function(){loadRoses().then(function(l){if(l.length>n0){stopPair();say("pmsg","✓ Ordinateur lié !","ok")}})},3e3)})};
+
+function card(e,url){var c=el("article","card ev");c.appendChild(el("strong",null,e.text));
+var d=el("div"),t=el("time",null,fmt(e.created_at)+" · "+(names[e.rose_id]||"Rose"));t.dateTime=e.created_at;d.appendChild(t);c.appendChild(d);
+if(url){var i=el("img");i.src=url;i.alt="Capture d’écran : "+e.text;i.loading="lazy";i.onclick=function(){$("zimg").src=url;$("zoom").classList.remove("hide")};c.appendChild(i)}
+var b=el("button","del","Supprimer");b.onclick=function(){(e.image_path?sb.storage.from("captures").remove([e.image_path]):Promise.resolve()).then(function(){return sb.from("events").delete().eq("id",e.id)}).then(function(){c.remove()})};
+c.appendChild(b);return c}
+function signed(l){var p=l.map(function(e){return e.image_path}).filter(Boolean);if(!p.length)return Promise.resolve({});
+return sb.storage.from("captures").createSignedUrls(p,3600).then(function(r){var m={};(r.data||[]).forEach(function(x){if(x.signedUrl)m[x.path]=x.signedUrl});return m})}
+function loadFeed(){return sb.from("events").select("id,rose_id,text,image_path,created_at").order("created_at",{ascending:false}).limit(30).then(function(r){
+var l=r.data||[];return signed(l).then(function(m){var f=$("feed");f.textContent="";l.forEach(function(e){f.appendChild(card(e,m[e.image_path]))});
+if(!l.length)f.appendChild(el("p","soft","Rien pour l’instant : donne un ordre à Rose, sa capture arrivera ici."))})})}
+function listen(){if(chan)return;chan=sb.channel("rose-events").on("postgres_changes",{event:"INSERT",schema:"public",table:"events"},function(p){
+var e=p.new;signed([e]).then(function(m){var f=$("feed");if(f.firstChild&&f.firstChild.tagName==="P")f.textContent="";f.prepend(card(e,m[e.image_path]))})}).subscribe()}
+function load(){loadRoses().then(loadFeed).then(listen)}
+function stopAll(){stopPair();if(chan){sb.removeChannel(chan);chan=null}$("feed").textContent="";$("roses").textContent=""}
+$("clearBtn").onclick=function(){if(!confirm("Supprimer toutes les captures ?"))return;
+sb.from("events").select("image_path").then(function(r){var p=(r.data||[]).map(function(x){return x.image_path}).filter(Boolean);
+return(p.length?sb.storage.from("captures").remove(p):Promise.resolve()).then(function(){return sb.from("events").delete().eq("user_id",uid)})}).then(loadFeed)};
+$("zoom").onclick=function(){$("zoom").classList.add("hide")};
+}
+</script></body></html>
