@@ -32,6 +32,7 @@ h2{font-size:1.5rem;margin:2.5rem 0 .75rem}
 .bar{height:14px;border:2px solid var(--ink);background:var(--card);margin-top:.4rem}
 .bar i{display:block;height:100%;background:repeating-linear-gradient(90deg,var(--orange) 0 10px,var(--pink) 10px 20px)}
 .lead{color:var(--soft);margin:1rem 0 0;max-width:36rem}
+.btn{display:inline-block;margin-top:1rem;padding:.5rem 1rem;border:2px solid var(--ink);background:var(--orange);color:#000;font-weight:600;text-decoration:none}
 ul{list-style:none;margin:0;padding:0}
 li.it{display:flex;gap:.9rem;justify-content:space-between;align-items:flex-start;padding:.85rem 0;border-bottom:1px solid var(--line)}
 li.it strong{display:block}
@@ -64,6 +65,7 @@ footer{margin-top:2.5rem}
 
 <h1>Rose</h1>
 <p class="lead">Assistante IA vocale. Cette page montre ce qu’elle sait faire, à quoi elle est connectée et où en est son développement.</p>
+<a class="btn" href="connexion-rose.html">Connexion à Rose depuis son téléphone →</a>
 
 <h2>Rose en action</h2>
 <figure class="demo">
@@ -85,7 +87,7 @@ footer{margin-top:2.5rem}
 <h2>Journal</h2>
 <ul id="log" class="log"></ul>
 
-<h2>Le reste de mon site</h2><ul class="log"><li><a href="https://archekozero.github.io/archek-infos.github.io/">Accueil</a></li><li><a href="https://archekozero.github.io/archek-infos.github.io/parcours.html">Parcours</a></li><li><a href="https://archekozero.github.io/archek-infos.github.io/convictions.html">Mes convictions</a></li><li><a href="https://archekozero.github.io/archek-infos.github.io/projet-cyberdeck.html">Cyberdeck</a></li><li><a href="https://archekozero.github.io/archek-infos.github.io/projet-rose-sous-cle.html">Rose sous clé</a></li><li><a href="https://archekozero.github.io/archek-infos.github.io/projet-vraie-ia.html">Une vraie IA</a></li><li><a href="https://archekozero.github.io/archek-infos.github.io/mentions-legales.html">Mentions légales</a></li></ul><footer><a href="https://archekozero.github.io/archek-infos.github.io/">← Retour à mon site</a></footer>
+<h2>Le reste de mon site</h2><ul class="log"><li><a href="https://archekozero.github.io/archek-infos.github.io/">Accueil</a></li><li><a href="connexion-rose.html">Connexion à Rose depuis son téléphone</a></li><li><a href="https://archekozero.github.io/archek-infos.github.io/parcours.html">Parcours</a></li><li><a href="https://archekozero.github.io/archek-infos.github.io/convictions.html">Mes convictions</a></li><li><a href="https://archekozero.github.io/archek-infos.github.io/projet-cyberdeck.html">Cyberdeck</a></li><li><a href="https://archekozero.github.io/archek-infos.github.io/projet-rose-sous-cle.html">Rose sous clé</a></li><li><a href="https://archekozero.github.io/archek-infos.github.io/projet-vraie-ia.html">Une vraie IA</a></li><li><a href="https://archekozero.github.io/archek-infos.github.io/mentions-legales.html">Mentions légales</a></li></ul><footer><a href="https://archekozero.github.io/archek-infos.github.io/">← Retour à mon site</a></footer>
 </main>
 
 <script>
@@ -98,6 +100,7 @@ var CAPS=[
  {n:"Micro instantané",d:"Elle écoute dès le lancement et rejoue ce que tu dis pendant que son modèle vocal charge.",s:"actif"},
  {n:"Arrêt vocal sûr",d:"Un « stop » au hasard ne la ferme plus : il faut dire « Rose, stop ».",s:"actif"},
  {n:"Ouvrir une appli au premier plan",d:"« Rose, ouvre Chrome » ramène la fenêtre devant, même si l’appli est déjà ouverte en arrière-plan.",s:"actif"},
+ {n:"Connexion téléphone ↔ ordinateur",d:"Compte, liaison de ton PC et de ton téléphone, et une capture d’écran de chaque ordre exécuté.",s:"wip"},
  {n:"Rose sous clé",d:"Une clé qui la lance sur n’importe quel système.",s:"plan"}
 ];
 var CONNS=[
@@ -114,7 +117,8 @@ var LOG=[
  {t:"2026-11-15",x:"Micro instantané : il s’ouvre dès le lancement, le modèle vocal charge en parallèle et l’audio dit pendant ce temps est rejoué."},
  {t:"2026-11-15",x:"Fin des coupures : un « stop » isolé ne ferme plus l’application, il faut dire « Rose, stop »."},
  {t:"2026-11-15",x:"Tampon du micro multiplié par 4 (0,4 s → 1,6 s) : elle ne perd plus d’audio quand elle est occupée."},
- {t:"2026-11-15",x:"Quand je demande d’ouvrir une appli, la fenêtre passe au premier plan, même si elle tournait déjà derrière."}
+ {t:"2026-11-15",x:"Quand je demande d’ouvrir une appli, la fenêtre passe au premier plan, même si elle tournait déjà derrière."},
+ {t:"2026-11-15",x:"Création de la page « Connexion à Rose depuis son téléphone » (compte, liaison, captures) : en cours de mise en service."}
 ];
 var L={actif:"Actif",wip:"En cours",plan:"Prévu"};
 function item(o){return '<li class="it"><div><strong>'+o.n+'</strong><span class="d">'+o.d+'</span></div><span class="tag '+o.s+'">'+L[o.s]+'</span></li>'}
