@@ -100,14 +100,14 @@ var CAPS=[
  {n:"Micro instantané",d:"Elle écoute dès le lancement et rejoue ce que tu dis pendant que son modèle vocal charge.",s:"actif"},
  {n:"Arrêt vocal sûr",d:"Un « stop » au hasard ne la ferme plus : il faut dire « Rose, stop ».",s:"actif"},
  {n:"Ouvrir une appli au premier plan",d:"« Rose, ouvre Chrome » ramène la fenêtre devant, même si l’appli est déjà ouverte en arrière-plan.",s:"actif"},
- {n:"Connexion téléphone ↔ ordinateur",d:"Compte, liaison de ton PC et de ton téléphone, et une capture d’écran de chaque ordre exécuté.",s:"wip"},
+ {n:"Connexion téléphone ↔ ordinateur",d:"Compte, liaison de ton PC et de ton téléphone, et une capture d’écran de chaque ordre exécuté.",s:"actif"},
  {n:"Rose sous clé",d:"Une clé qui la lance sur n’importe quel système.",s:"plan"}
 ];
 var CONNS=[
  {n:"Vosk",d:"Moteur de reconnaissance vocale.",s:"actif"},
  {n:"IA de conversation (clé API)",d:"Génère les réponses de la conversation continue.",s:"actif"},
  {n:"iPhone (Raccourcis)",d:"Rose se connecte au téléphone via un raccourci.",s:"actif"},
- {n:"Android",d:"Même connexion pour les téléphones Android.",s:"wip"}
+ {n:"Web app (tous les téléphones)",d:"Page « Connexion à Rose depuis son téléphone » : ordres, conversation et captures d’écran, sur iPhone comme sur Android.",s:"actif"}
 ];
 var LOG=[
  {t:"2026-11-12",x:"Code relu et corrigé."},
@@ -118,7 +118,8 @@ var LOG=[
  {t:"2026-11-15",x:"Fin des coupures : un « stop » isolé ne ferme plus l’application, il faut dire « Rose, stop »."},
  {t:"2026-11-15",x:"Tampon du micro multiplié par 4 (0,4 s → 1,6 s) : elle ne perd plus d’audio quand elle est occupée."},
  {t:"2026-11-15",x:"Quand je demande d’ouvrir une appli, la fenêtre passe au premier plan, même si elle tournait déjà derrière."},
- {t:"2026-11-15",x:"Création de la page « Connexion à Rose depuis son téléphone » (compte, liaison, captures) : en cours de mise en service."}
+ {t:"2026-11-15",x:"Création de la page « Connexion à Rose depuis son téléphone » (compte, liaison, captures) : en cours de mise en service."},
+ {t:"2026-11-15",x:"Web app en ligne : depuis n’importe quel téléphone, je donne des ordres à Rose, je lui parle et je reçois les captures. Elle remplace la version Android prévue."}
 ];
 var L={actif:"Actif",wip:"En cours",plan:"Prévu"};
 function item(o){return '<li class="it"><div><strong>'+o.n+'</strong><span class="d">'+o.d+'</span></div><span class="tag '+o.s+'">'+L[o.s]+'</span></li>'}
