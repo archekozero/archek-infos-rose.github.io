@@ -139,7 +139,12 @@ footer{margin-top:2rem;color:var(--soft);font-size:.9rem}
 <button type="button" data-say="Mets de la musique">Mets de la musique</button>
 <button type="button" data-say="Mets un minuteur de 5 minutes">Minuteur 5 min</button>
 <button type="button" data-say="Quelle heure est-il ?">Quelle heure est-il ?</button>
+<button type="button" data-say="J'ai une question">J'ai une question</button>
 <button type="button" data-say="Rejoins un vocal">Rejoindre un vocal</button>
+<button type="button" data-fill="Cherche  sur youtube">Chercher sur YouTube…</button>
+<button type="button" data-say="Proposition 1">Proposition 1</button>
+<button type="button" data-say="Proposition 2">Proposition 2</button>
+<button type="button" data-say="Proposition 3">Proposition 3</button>
 </div>
 <form id="sendForm" class="send"><input id="msg" maxlength="500" autocomplete="off" placeholder="Écris à Rose…" aria-label="Message pour Rose"><button id="sendBtn" type="submit">Envoyer</button></form>
 <p id="tmsg" class="msg" role="status"></p></section>
@@ -261,7 +266,7 @@ function wake(mode){var w=$("wakeBox");w.dataset.busy="1";w.classList.add("hide"
 setTimeout(function(){delete w.dataset.busy;loadRoses()},mode==="lourde"?9e4:45e3)}
 $("wakeLight").onclick=function(){wake("legere")};
 $("wakeHeavy").onclick=function(){wake("lourde")};
-[].forEach.call(document.querySelectorAll(".sugg button"),function(b){b.onclick=function(){send(b.getAttribute("data-say"))}});
+[].forEach.call(document.querySelectorAll(".sugg button"),function(b){b.onclick=function(){var f=b.getAttribute("data-fill");if(f){var m=$("msg");m.value=f;m.focus();m.setSelectionRange(8,8);return}send(b.getAttribute("data-say"))}});
 
 function stopPair(){clearInterval(tick);clearInterval(poll);$("pairBox").classList.add("hide")}
 $("pairBtn").onclick=function(){stopPair();sb.rpc("create_pair_code").then(function(r){
