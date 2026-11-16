@@ -48,6 +48,12 @@ button:disabled{opacity:.5;cursor:default}
 .online i{width:10px;height:10px;flex:none;background:var(--soft)}
 .online.on{color:var(--ok)}.online.on i{background:var(--ok);box-shadow:0 0 0 2px #0b2a1a,0 0 8px var(--ok)}
 .online.off{color:var(--soft)}
+/* allumage : Rose legere ou lourde */
+.wake{margin:.8rem 0 0;padding:.8rem;border:2px dashed var(--line)}
+.wake p{margin:0;font-weight:600}
+.wakes{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.6rem;margin-top:.6rem}
+.wakes button{margin:0;text-align:left;display:flex;flex-direction:column;gap:.15rem}
+.wakes button small{font-weight:400;font-size:.85rem;line-height:1.35}
 /* conversation */
 .chat{display:flex;flex-direction:column;gap:.9rem;max-height:30rem;overflow-y:auto;padding:1rem .25rem .5rem;margin:1rem 0 .25rem;border-top:1px solid var(--line);overscroll-behavior:contain}
 .line{display:flex;align-items:flex-end;gap:.5rem}
@@ -112,7 +118,11 @@ footer{margin-top:2rem;color:var(--soft);font-size:.9rem}
 <label for="target" style="margin-top:0">Ordinateur</label>
 <select id="target"></select>
 <p id="online" class="online off" aria-live="polite"><i></i><span></span></p>
-<button id="wakeBtn" class="hide" type="button">Allumer Rose</button>
+<div id="wakeBox" class="wake hide"><p>Allumer Rose : laquelle ?</p>
+<div class="wakes">
+<button id="wakeLight" type="button">Rose légère<small>Prête en 1 à 2 secondes. Comprend très bien les commandes (« ouvre Chrome », « minuteur 5 min »), un peu moins les longues phrases.</small></button>
+<button id="wakeHeavy" type="button" class="alt">Rose lourde<small>Comprend mieux quand tu lui parles librement, mais met plus de temps à démarrer.</small></button>
+</div></div>
 <div id="chat" class="chat" aria-live="polite"></div>
 <div class="sugg" aria-label="Exemples">
 <button type="button" data-say="Ouvre Chrome">Ouvre Chrome</button>
@@ -189,7 +199,7 @@ if(!l.length)box.appendChild(el("p","soft","Aucun ordinateur lié pour l’insta
 function fillTarget(){var t=$("target"),cur=t.value;t.textContent="";roses.forEach(function(x){var o=el("option",null,x.name);o.value=x.id;t.appendChild(o)});
 if(cur&&roses.some(function(x){return x.id===cur}))t.value=cur;$("talk").classList.toggle("hide",!roses.length);showOnline()}
 function showOnline(){var x=roses.filter(function(y){return y.id===$("target").value})[0],o=$("online");
-var w=$("wakeBtn");if(!x){o.classList.add("hide");w.classList.add("hide");return}o.classList.remove("hide");var on=isOn(x),cw=!on&&canWake(x);o.className="online "+(on?"on":"off");
+var w=$("wakeBox");if(!x){o.classList.add("hide");w.classList.add("hide");return}o.classList.remove("hide");var on=isOn(x),cw=!on&&canWake(x);o.className="online "+(on?"on":"off");
 o.querySelector("span").textContent=on?"Rose est en ligne":cw?"Rose est éteinte, mais ton PC peut l’allumer":"Rose ne répond pas (PC éteint, ou allumage à distance désactivé dans ses Réglages)";
 w.classList.toggle("hide",!cw||!!w.dataset.busy)}
 var ST={pending:"envoyé",running:"Rose s’en occupe…",done:"",expired:"pas reçu à temps (Rose était fermée ?)"};
@@ -215,8 +225,11 @@ function send(t,kind){var rid=$("target").value;if(!t||!rid)return;$("sendBtn").
 sb.from("commands").insert({rose_id:rid,text:t,kind:kind||"order"}).then(function(r){$("sendBtn").disabled=false;
 if(r.error){say("tmsg","Envoi impossible : "+r.error.message,"err");return}$("msg").value="";say("tmsg","","");$("chat").dataset.ready="";loadChat()})}
 $("sendForm").onsubmit=function(ev){ev.preventDefault();send($("msg").value.trim())};
-$("wakeBtn").onclick=function(){var w=$("wakeBtn");w.dataset.busy="1";w.classList.add("hide");send("Allume-toi","wake");
-setTimeout(function(){delete w.dataset.busy;loadRoses()},45e3)};
+// le texte de l'ordre dit au PC quelle Rose lancer (lu par le veilleur de Rose)
+function wake(mode){var w=$("wakeBox");w.dataset.busy="1";w.classList.add("hide");send(mode==="lourde"?"Allume-toi (lourde)":"Allume-toi (légère)","wake");
+setTimeout(function(){delete w.dataset.busy;loadRoses()},mode==="lourde"?9e4:45e3)}
+$("wakeLight").onclick=function(){wake("legere")};
+$("wakeHeavy").onclick=function(){wake("lourde")};
 [].forEach.call(document.querySelectorAll(".sugg button"),function(b){b.onclick=function(){send(b.getAttribute("data-say"))}});
 
 function stopPair(){clearInterval(tick);clearInterval(poll);$("pairBox").classList.add("hide")}
