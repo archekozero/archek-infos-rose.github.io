@@ -10,18 +10,18 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://xluluwdlompuqaismeng.supabase.co" crossorigin>
-<meta name="theme-color" content="#130a22">
+<meta name="theme-color" content="#07040d">
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 /* DA "verre givre" : une vitre depolie posee sur le ciel de nuit de Rose (aurore rose / abricot) */
-:root{color-scheme:dark;--night:#130a22;--ink:#f6ebdd;--soft:#bcaecd;--pink:#f08ab8;--orange:#f7a25c;--ok:#6fd49c;--bad:#ff8a8a;
---glass:rgba(255,240,250,.07);--glass2:rgba(255,240,250,.12);--edge:rgba(255,235,245,.16);--edge2:rgba(255,235,245,.28);--line:rgba(255,235,245,.10);
+:root{color-scheme:dark;--night:#07040d;--ink:#f6ebdd;--soft:#bcaecd;--pink:#f08ab8;--orange:#f7a25c;--ok:#6fd49c;--bad:#ff8a8a;
+--glass:rgba(14,8,24,.62);--glass2:rgba(24,14,38,.72);--edge:rgba(255,235,245,.10);--edge2:rgba(255,235,245,.18);--line:rgba(255,235,245,.08);
 --blur:blur(18px) saturate(150%);
 padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box}
 html{background:var(--night)}
 body{margin:0;min-height:100vh;color:var(--ink);font:400 1rem/1.55 Nunito,system-ui,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;
-background:radial-gradient(60rem 38rem at 85% -10%,rgba(240,138,184,.35),transparent 60%),radial-gradient(48rem 34rem at -10% 30%,rgba(247,162,92,.22),transparent 60%),radial-gradient(50rem 40rem at 60% 110%,rgba(120,80,200,.30),transparent 60%),var(--night);background-attachment:fixed}
+background:radial-gradient(60rem 38rem at 85% -10%,rgba(240,138,184,.16),transparent 60%),radial-gradient(48rem 34rem at -10% 30%,rgba(247,162,92,.09),transparent 60%),radial-gradient(50rem 40rem at 60% 110%,rgba(110,70,190,.16),transparent 60%),var(--night);background-attachment:fixed}
 main{position:relative;z-index:1;max-width:44rem;margin:0 auto;padding:1.25rem 1rem 3rem}
 #sky{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .st{position:absolute;width:3px;height:3px;background:var(--c);opacity:.8;transition:opacity .25s linear}
@@ -39,15 +39,15 @@ code{font-size:.9em}
 -webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur)}
 /* le verre : une seule recette pour les cartes */
 .card{position:relative;background:linear-gradient(160deg,var(--glass2),var(--glass) 45%);border:1px solid var(--edge);border-radius:22px;padding:1.1rem 1rem 1.15rem;margin:1.25rem 0;
--webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 20px 40px -24px rgba(0,0,0,.6)}
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.card,.bubble{background:rgba(40,24,60,.92)}}
+-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 20px 40px -20px rgba(0,0,0,.8)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.card,.bubble{background:rgba(18,10,30,.96)}}
 .soft{color:var(--soft)}.small{font-size:.88rem}.hide{display:none!important}
 label{display:block;font-weight:600;font-size:.92rem;margin:.8rem 0 .3rem}
 input,select{width:100%;font:inherit;color:var(--ink);background:rgba(10,4,20,.45);border:1px solid var(--edge);border-radius:14px;padding:.65rem .85rem;transition:border-color .15s}
 input::placeholder{color:rgba(188,174,205,.7)}
 input:focus,select:focus{border-color:var(--pink);outline:none;box-shadow:0 0 0 3px rgba(240,138,184,.22)}
 select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--soft) 50%),linear-gradient(-45deg,transparent 50%,var(--soft) 50%);background-position:calc(100% - 20px) 55%,calc(100% - 14px) 55%;background-size:6px 6px;background-repeat:no-repeat;padding-right:2.4rem}
-select option{background:#24143a}
+select option{background:#140b22}
 button{font:700 .98rem Nunito,sans-serif;color:#2a1020;background:linear-gradient(135deg,#ffc08a,var(--orange) 45%,var(--pink));border:0;border-radius:999px;padding:.62rem 1.15rem;cursor:pointer;margin:.75rem .5rem 0 0;
 box-shadow:0 6px 18px -8px rgba(240,138,184,.8),inset 0 1px 0 rgba(255,255,255,.45);transition:transform .12s,filter .15s}
 button:hover{filter:brightness(1.06)}
@@ -111,7 +111,7 @@ button:disabled{opacity:.5;cursor:default;transform:none}
 .ev .t{font-weight:600;font-size:.92rem;overflow-wrap:anywhere}
 .ev img{display:block;width:100%;height:auto;border-radius:10px;cursor:zoom-in}
 .ev .foot{display:flex;justify-content:space-between;align-items:center;gap:.5rem;font-size:.78rem;color:var(--soft)}
-#zoom{position:fixed;inset:0;background:rgba(19,10,34,.75);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:1rem;z-index:9}
+#zoom{position:fixed;inset:0;background:rgba(7,4,13,.85);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:1rem;z-index:9}
 #zoom img{max-width:100%;max-height:100%;border-radius:14px;box-shadow:0 30px 60px rgba(0,0,0,.6)}
 footer{margin-top:1.5rem;color:var(--soft);font-size:.85rem}
 </style>
