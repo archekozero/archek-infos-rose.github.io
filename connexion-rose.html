@@ -73,6 +73,16 @@ button:disabled{opacity:.5;cursor:default}
 .dots i:nth-child(2){animation-delay:.4s}.dots i:nth-child(3){animation-delay:.8s}
 @keyframes blink{50%{opacity:.2}}
 @media (prefers-reduced-motion:reduce){.dots i{animation:none}}
+/* liste des vocaux Discord envoyee par Rose */
+.vcp{display:flex;flex-direction:column;gap:.45rem;margin-top:.55rem;white-space:normal}
+.vcp h4{margin:.35rem 0 0;font:700 .8rem "Pixelify Sans",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--pink)}
+.vcp button{margin:0;display:flex;justify-content:space-between;align-items:center;gap:.6rem;text-align:left;background:#000;color:var(--ink);box-shadow:none;border-color:var(--line);padding:.45rem .6rem}
+.vcp button:hover{border-color:var(--pink)}
+.vcp button .n{display:block;font-weight:700}
+.vcp button .m{display:block;font-weight:400;font-size:.82rem;color:var(--soft)}
+.vcp button .go{flex:none;font-size:.8rem;font-weight:700;color:#000;background:var(--pink);border:2px solid var(--ink);padding:.1rem .45rem}
+.vcp button:disabled{opacity:1;cursor:default}
+.vcp button:disabled .go{background:var(--card2);color:var(--ink)}
 .sugg{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 0}
 .sugg button{margin:0;padding:.25rem .65rem;font-size:.88rem;background:transparent;color:var(--ink);box-shadow:none;border-color:var(--line)}
 .send{display:flex;gap:.5rem;margin-top:.6rem}.send input{flex:1;min-width:0}.send button{margin:0;flex:none}
@@ -129,6 +139,7 @@ footer{margin-top:2rem;color:var(--soft);font-size:.9rem}
 <button type="button" data-say="Mets de la musique">Mets de la musique</button>
 <button type="button" data-say="Mets un minuteur de 5 minutes">Minuteur 5 min</button>
 <button type="button" data-say="Quelle heure est-il ?">Quelle heure est-il ?</button>
+<button type="button" data-say="Rejoins un vocal">Rejoindre un vocal</button>
 </div>
 <form id="sendForm" class="send"><input id="msg" maxlength="500" autocomplete="off" placeholder="Écris à Rose…" aria-label="Message pour Rose"><button id="sendBtn" type="submit">Envoyer</button></form>
 <p id="tmsg" class="msg" role="status"></p></section>
@@ -154,8 +165,18 @@ function say(id,t,k){var e=$(id);e.textContent=t;e.className="msg "+(k||"")}
 function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
 function fmt(t){var d=new Date(t),n=new Date();return d.toDateString()===n.toDateString()?d.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}):d.toLocaleString("fr-FR",{dateStyle:"short",timeStyle:"short"})}
 // texte renvoye par Rose : "✓ ordre — reponse (capture masquee : fenetre privee)"
-function parts(t){var ok=null,m=false;t=t||"";if(t.indexOf("✓ ")===0){ok=true;t=t.slice(2)}else if(t.indexOf("✗ ")===0){ok=false;t=t.slice(2)}
-var re=/\s*\(capture masqu[eé]e : fen[eê]tre priv[eé]e\)/;if(re.test(t)){m=true;t=t.replace(re,"")}t=t.charAt(0).toUpperCase()+t.slice(1);return{ok:ok,t:t,masked:m}}
+// liste des vocaux : "Choisis un vocal~\n§VOCAUX\nid<TAB>salon<TAB>serveur<TAB>membres\n..."
+function parts(t){var ok=null,m=false,vc=null;t=t||"";var k=t.indexOf("§VOCAUX\n");
+if(k>=0){vc=t.slice(k+8).split("\n").map(function(l){var f=l.split("\t");return{id:f[0],name:f[1],guild:f[2],members:f[3]||""}}).filter(function(r){return/^\d{15,}$/.test(r.id)&&r.name});t=t.slice(0,k).trim()}
+if(t.indexOf("✓ ")===0){ok=true;t=t.slice(2)}else if(t.indexOf("✗ ")===0){ok=false;t=t.slice(2)}
+var re=/\s*\(capture masqu[eé]e : fen[eê]tre priv[eé]e\)/;if(re.test(t)){m=true;t=t.replace(re,"")}t=t.charAt(0).toUpperCase()+t.slice(1);return{ok:ok,t:t,masked:m,vc:vc}}
+// les salons, groupes par serveur ; un clic demande a Rose d'y aller
+function vcPicker(list){var box=el("div","vcp"),g=null;
+list.forEach(function(r){if(r.guild!==g){g=r.guild;box.appendChild(el("h4",null,g||"Serveur"))}
+var b=el("button");b.type="button";var d=el("span");d.appendChild(el("span","n",r.name));d.appendChild(el("span","m",r.members||"vide"));b.appendChild(d);
+b.appendChild(el("span","go","Rejoindre"));b.onclick=function(){[].forEach.call(box.querySelectorAll("button"),function(x){x.disabled=true});b.querySelector(".go").textContent="J'y vais…";send("Rejoins "+r.name+" (id "+r.id+")")};
+box.appendChild(b)});
+if(!list.length)box.appendChild(el("span","m","Aucun salon vocal."));return box}
 function chipsFor(p){var c=el("div","chips");if(p.ok===true)c.appendChild(el("span","chip ok","✓ fait"));if(p.ok===false)c.appendChild(el("span","chip ko","✗ pas réussi"));
 if(p.masked)c.appendChild(el("span","chip mask","capture masquée · fenêtre privée"));return c.childNodes.length?c:null}
 function zoomImg(img,u){img.onclick=function(){$("zimg").src=u;$("zoom").classList.remove("hide")}}
@@ -213,15 +234,25 @@ cmds.forEach(function(k){var l=line("me"),b=el("div","bub",k.text);
 b.appendChild(el("span","meta",fmt(k.created_at)+(roses.length>1&&names[k.rose_id]?" · "+names[k.rose_id]:"")+(ST[k.status]?" · "+ST[k.status]:"")));l.appendChild(b);c.appendChild(l);
 var mine=evs.filter(function(e){return e.command_id===k.id});
 mine.forEach(function(e){var p=parts(e.text),l2=line("her"),b2=el("div","bub");var ch=chipsFor(p);if(ch)b2.appendChild(ch);
-b2.appendChild(document.createTextNode(p.t));var u=m[e.image_path];
+b2.appendChild(document.createTextNode(p.t));if(p.vc)b2.appendChild(vcPicker(p.vc));var u=m[e.image_path];
 if(u){var i=el("img");i.src=u;i.alt="Capture d’écran : "+p.t;zoomImg(i,u);i.onload=function(){if(c.dataset.stick==="1")c.scrollTop=c.scrollHeight};b2.appendChild(i)}
 b2.appendChild(el("span","meta",fmt(e.created_at)));l2.appendChild(b2);c.appendChild(l2)});
 if(!mine.length&&(k.status==="pending"||k.status==="running")){var l3=line("her"),b3=el("div","bub"),d=el("span","dots");d.setAttribute("aria-label","Rose réfléchit");
 d.appendChild(el("i"));d.appendChild(el("i"));d.appendChild(el("i"));b3.appendChild(d);l3.appendChild(b3);c.appendChild(l3)}});
+if(offNote&&offNote.rid===$("target").value){var lm=line("me"),bm=el("div","bub",offNote.t);bm.appendChild(el("span","meta",fmt(offNote.at)+" · pas envoyé"));lm.appendChild(bm);c.appendChild(lm);
+var lh=line("her"),bh=el("div","bub",offNote.r);bh.appendChild(el("span","meta",fmt(offNote.at)));lh.appendChild(bh);c.appendChild(lh);stick=true}
 if(stick||!c.dataset.ready){c.scrollTop=c.scrollHeight;c.dataset.ready=1;c.dataset.stick="1"}else c.dataset.stick="0"})})})}
+// Rose eteinte : elle "repond" tout de suite sur la page au lieu de laisser l'ordre sans reponse
+var offNote=null;
+function offReply(x){return canWake(x)
+?"Je suis éteinte pour l’instant~ Allume-moi avec « Rose légère » ou « Rose lourde » juste au-dessus, puis renvoie ton message : je te répondrai."
+:"Je suis éteinte, et ton PC ne me répond pas (éteint, en veille, ou « Allumage à distance » désactivé dans mes Réglages). Allume-moi depuis le PC, puis renvoie ton message~"}
 var chatT=null;function chatSoon(){clearTimeout(chatT);chatT=setTimeout(loadChat,300)}
 $("target").onchange=showOnline;
-function send(t,kind){var rid=$("target").value;if(!t||!rid)return;$("sendBtn").disabled=true;
+function send(t,kind){var rid=$("target").value;if(!t||!rid)return;
+var x=roses.filter(function(y){return y.id===rid})[0];
+if(kind!=="wake"&&x&&!isOn(x)){offNote={rid:rid,t:t,r:offReply(x),at:new Date().toISOString()};say("tmsg","","");$("chat").dataset.ready="";loadChat();return}
+offNote=null;$("sendBtn").disabled=true;
 sb.from("commands").insert({rose_id:rid,text:t,kind:kind||"order"}).then(function(r){$("sendBtn").disabled=false;
 if(r.error){say("tmsg","Envoi impossible : "+r.error.message,"err");return}$("msg").value="";say("tmsg","","");$("chat").dataset.ready="";loadChat()})}
 $("sendForm").onsubmit=function(ev){ev.preventDefault();send($("msg").value.trim())};
@@ -240,7 +271,7 @@ $("code").textContent=c.slice(0,4)+"-"+c.slice(4);$("pairBox").classList.remove(
 tick=setInterval(function(){var s=Math.max(0,Math.round((end-Date.now())/1e3));$("left").textContent=Math.floor(s/60)+":"+("0"+s%60).slice(-2);if(!s){stopPair();say("pmsg","Code expiré, génères-en un nouveau.","err")}},1e3);
 poll=setInterval(function(){loadRoses().then(function(l){if(l.length>n0){stopPair();say("pmsg","✓ Ordinateur lié !","ok")}})},3e3)})};
 
-function card(e,url){var p=parts(e.text),c=el("article","ev");var ch=chipsFor(p);if(ch)c.appendChild(ch);c.appendChild(el("div","t",p.t));
+function card(e,url){var p=parts(e.text),c=el("article","ev");var ch=chipsFor(p);if(ch)c.appendChild(ch);c.appendChild(el("div","t",p.vc?"Liste des vocaux ("+p.vc.length+" salons)":p.t));
 if(url){var i=el("img");i.src=url;i.alt="Capture d’écran : "+p.t;i.loading="lazy";zoomImg(i,url);c.appendChild(i)}
 var f=el("div","foot");f.appendChild(el("span",null,fmt(e.created_at)+(roses.length>1?" · "+(names[e.rose_id]||"Rose"):"")));
 var b=el("button","link bad","Supprimer");b.onclick=function(){(e.image_path?sb.storage.from("captures").remove([e.image_path]):Promise.resolve()).then(function(){return sb.from("events").delete().eq("id",e.id)}).then(function(){c.remove()})};
