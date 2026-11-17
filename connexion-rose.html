@@ -233,6 +233,8 @@ sb.auth.updateUser({password:p}).then(function(r){if(r.error)say("rmsg",r.error.
 $("logout").onclick=function(){sb.auth.signOut()};
 
 function isOn(x){return x&&x.last_poll&&Date.now()-new Date(x.last_poll).getTime()<25e3}
+// pour ENVOYER un ordre on est plus tolerant : si le reseau du PC rame un instant, l’ordre attend dans la file et Rose le prend des qu’elle repasse
+function alive(x){return x&&x.last_poll&&Date.now()-new Date(x.last_poll).getTime()<12e4}
 function canWake(x){return x&&x.last_wake_poll&&Date.now()-new Date(x.last_wake_poll).getTime()<25e3}
 function loadRoses(){return sb.from("roses").select("id,name,last_seen,last_poll,last_wake_poll").order("created_at").then(function(r){
 var box=$("roses"),l=r.data||[];box.textContent="";names={};roses=l;fillTarget();
@@ -275,7 +277,7 @@ var chatT=null;function chatSoon(){clearTimeout(chatT);chatT=setTimeout(loadChat
 $("target").onchange=showOnline;
 function send(t,kind){var rid=$("target").value;if(!t||!rid)return;
 var x=roses.filter(function(y){return y.id===rid})[0];
-if(kind!=="wake"&&x&&!isOn(x)){offNote={rid:rid,t:t,r:offReply(x),at:new Date().toISOString()};say("tmsg","","");$("chat").dataset.ready="";loadChat();return}
+if(kind!=="wake"&&x&&!alive(x)){offNote={rid:rid,t:t,r:offReply(x),at:new Date().toISOString()};say("tmsg","","");$("chat").dataset.ready="";loadChat();return}
 offNote=null;$("sendBtn").disabled=true;
 sb.from("commands").insert({rose_id:rid,text:t,kind:kind||"order"}).then(function(r){$("sendBtn").disabled=false;
 if(r.error){say("tmsg","Envoi impossible : "+r.error.message,"err");return}$("msg").value="";say("tmsg","","");$("chat").dataset.ready="";loadChat()})}
