@@ -198,7 +198,7 @@ var re=/\s*\(capture masqu[eé]e : fen[eê]tre priv[eé]e\)/;if(re.test(t)){m=tr
 function vcPicker(list){var box=el("div","vcp"),g=null;
 list.forEach(function(r){if(r.guild!==g){g=r.guild;box.appendChild(el("h4",null,g||"Serveur"))}
 var b=el("button");b.type="button";var d=el("span");d.appendChild(el("span","n",r.name));d.appendChild(el("span","m",r.members||"vide"));b.appendChild(d);
-b.appendChild(el("span","go","Rejoindre"));b.onclick=function(){[].forEach.call(box.querySelectorAll("button"),function(x){x.disabled=true});b.querySelector(".go").textContent="J'y vais…";send("Rejoins "+r.name+" (id "+r.id+")")};
+b.appendChild(el("span","go","Rejoindre"));b.onclick=function(){[].forEach.call(box.querySelectorAll("button"),function(x){x.disabled=true});b.querySelector(".go").textContent="J'y vais…";window.roseSend("Rejoins "+r.name+" (id "+r.id+")")};
 box.appendChild(b)});
 if(!list.length)box.appendChild(el("span","m","Aucun salon vocal."));return box}
 function chipsFor(p){var c=el("div","chips");if(p.ok===true)c.appendChild(el("span","chip ok","✓ fait"));if(p.ok===false)c.appendChild(el("span","chip ko","✗ pas réussi"));
@@ -282,6 +282,7 @@ offNote=null;$("sendBtn").disabled=true;
 sb.from("commands").insert({rose_id:rid,text:t,kind:kind||"order"}).then(function(r){$("sendBtn").disabled=false;
 if(r.error){say("tmsg","Envoi impossible : "+r.error.message,"err");return}$("msg").value="";say("tmsg","","");$("chat").dataset.ready="";loadChat()})}
 $("sendForm").onsubmit=function(ev){ev.preventDefault();send($("msg").value.trim())};
+window.roseSend=send;   // la liste des vocaux (definie hors de start) envoie par ici
 // le texte de l'ordre dit au PC quelle Rose lancer (lu par le veilleur de Rose)
 function wake(mode){var w=$("wakeBox");w.dataset.busy="1";w.classList.add("hide");send(mode==="lourde"?"Allume-toi (lourde)":"Allume-toi (légère)","wake");
 setTimeout(function(){delete w.dataset.busy;loadRoses()},mode==="lourde"?9e4:45e3)}
