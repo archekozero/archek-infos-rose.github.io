@@ -254,15 +254,21 @@ function line(who){var l=el("div","line "+who);if(who==="her"){var a=el("img","a
 function loadChat(){if(!uid)return Promise.resolve();return sb.from("commands").select("id,rose_id,text,status,created_at").order("created_at",{ascending:false}).limit(25).then(function(r){
 var cmds=(r.data||[]).reverse(),ids=cmds.map(function(c){return c.id});
 var q=ids.length?sb.from("events").select("id,command_id,text,image_path,created_at").in("command_id",ids).order("created_at"):Promise.resolve({data:[]});
-return q.then(function(er){var evs=er.data||[];return signed(evs).then(function(m){var c=$("chat"),stick=c.scrollTop+c.clientHeight>=c.scrollHeight-40;c.textContent="";
-if(!cmds.length){var l0=line("her"),b0=el("div","bub","Écris-moi un ordre ou une question, je m’en occupe sur ton PC~");l0.appendChild(b0);c.appendChild(l0)}
-cmds.forEach(function(k){var l=line("me"),b=el("div","bub",k.text);
-b.appendChild(el("span","meta",fmt(k.created_at)+(roses.length>1&&names[k.rose_id]?" · "+names[k.rose_id]:"")+(ST[k.status]?" · "+ST[k.status]:"")));l.appendChild(b);c.appendChild(l);
-var mine=evs.filter(function(e){return e.command_id===k.id});
-mine.forEach(function(e){var p=parts(e.text),l2=line("her"),b2=el("div","bub");var ch=chipsFor(p);if(ch)b2.appendChild(ch);
+// messages que Rose envoie d'elle-meme (message transmis depuis Discord, minuteur, alerte...) : aussi dans la conversation
+var q2=sb.from("events").select("id,command_id,text,image_path,created_at").is("command_id",null).order("created_at",{ascending:false}).limit(15);
+return Promise.all([q,q2]).then(function(rr){var er=rr[0],solo=((rr[1]&&rr[1].data)||[]).reverse();var evs=(er.data||[]).concat(solo);return signed(evs).then(function(m){var c=$("chat"),stick=c.scrollTop+c.clientHeight>=c.scrollHeight-40;c.textContent="";
+if(!cmds.length&&!solo.length){var l0=line("her"),b0=el("div","bub","Écris-moi un ordre ou une question, je m’en occupe sur ton PC~");l0.appendChild(b0);c.appendChild(l0)}
+function herMsg(e){var p=parts(e.text),l2=line("her"),b2=el("div","bub");var ch=chipsFor(p);if(ch)b2.appendChild(ch);
 b2.appendChild(document.createTextNode(p.t));if(p.vc)b2.appendChild(vcPicker(p.vc));var u=m[e.image_path];
 if(u){var i=el("img");i.src=u;i.alt="Capture d’écran : "+p.t;zoomImg(i,u);i.onload=function(){if(c.dataset.stick==="1")c.scrollTop=c.scrollHeight};b2.appendChild(i)}
-b2.appendChild(el("span","meta",fmt(e.created_at)));l2.appendChild(b2);c.appendChild(l2)});
+b2.appendChild(el("span","meta",fmt(e.created_at)));l2.appendChild(b2);c.appendChild(l2)}
+// ordres et messages spontanes, dans l'ordre du temps
+var tl=cmds.map(function(k){return{at:k.created_at,k:k}}).concat(solo.map(function(e){return{at:e.created_at,e:e}}));
+tl.sort(function(a,b){return new Date(a.at)-new Date(b.at)});
+tl.forEach(function(it){if(it.e){herMsg(it.e);return}var k=it.k;var l=line("me"),b=el("div","bub",k.text);
+b.appendChild(el("span","meta",fmt(k.created_at)+(roses.length>1&&names[k.rose_id]?" · "+names[k.rose_id]:"")+(ST[k.status]?" · "+ST[k.status]:"")));l.appendChild(b);c.appendChild(l);
+var mine=evs.filter(function(e){return e.command_id===k.id});
+mine.forEach(herMsg);
 if(!mine.length&&(k.status==="pending"||k.status==="running")){var l3=line("her"),b3=el("div","bub"),d=el("span","dots");d.setAttribute("aria-label","Rose réfléchit");
 d.appendChild(el("i"));d.appendChild(el("i"));d.appendChild(el("i"));b3.appendChild(d);l3.appendChild(b3);c.appendChild(l3)}});
 if(offNote&&offNote.rid===$("target").value){var lm=line("me"),bm=el("div","bub",offNote.t);bm.appendChild(el("span","meta",fmt(offNote.at)+" · pas envoyé"));lm.appendChild(bm);c.appendChild(lm);
@@ -309,7 +315,7 @@ function loadFeed(){return sb.from("events").select("id,rose_id,text,image_path,
 var l=r.data||[];return signed(l).then(function(m){var f=$("feed");f.textContent="";l.forEach(function(e){f.appendChild(card(e,m[e.image_path]))});
 if(!l.length)f.appendChild(el("p","soft","Rien pour l’instant : donne un ordre à Rose, sa capture arrivera ici."))})})}
 function listen(){if(chan)return;chan=sb.channel("rose-events").on("postgres_changes",{event:"*",schema:"public",table:"commands"},chatSoon).on("postgres_changes",{event:"INSERT",schema:"public",table:"events"},function(p){
-var e=p.new;if(e.command_id)chatSoon();signed([e]).then(function(m){var f=$("feed");if(f.firstChild&&f.firstChild.tagName==="P")f.textContent="";f.prepend(card(e,m[e.image_path]))})}).subscribe()}
+var e=p.new;chatSoon();signed([e]).then(function(m){var f=$("feed");if(f.firstChild&&f.firstChild.tagName==="P")f.textContent="";f.prepend(card(e,m[e.image_path]))})}).subscribe()}
 function load(){loadRoses().then(loadFeed).then(loadChat).then(listen);clearInterval(rosesT);rosesT=setInterval(function(){loadRoses()},1e4)}
 function stopAll(){stopPair();clearInterval(rosesT);roses=[];$("chat").textContent="";if(chan){sb.removeChannel(chan);chan=null}$("feed").textContent="";$("roses").textContent=""}
 $("clearBtn").onclick=function(){if(!confirm("Supprimer toutes les captures ?"))return;
