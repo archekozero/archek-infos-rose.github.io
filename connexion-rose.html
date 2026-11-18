@@ -57,7 +57,8 @@ button.link{background:none;border:0;box-shadow:none;color:var(--soft);padding:.
 button.link.bad{color:var(--bad)}
 button:disabled{opacity:.5;cursor:default;transform:none}
 .msg{min-height:1.4em;margin:.6rem 0 0;font-weight:600;font-size:.92rem}.msg.err{color:var(--bad)}.msg.ok{color:var(--ok)}
-.code{font:700 2.3rem "Pixelify Sans",monospace;letter-spacing:.15em;color:var(--pink);margin:.5rem 0;text-shadow:0 0 18px rgba(240,138,184,.5)}
+.code{font:700 2.4rem ui-monospace,"Cascadia Mono",Consolas,"Courier New",monospace;letter-spacing:.18em;color:#fff;background:rgba(255,255,255,.07);border:1px solid rgba(240,138,184,.45);border-radius:8px;display:inline-block;padding:.25em .6em;margin:.5rem 0;text-shadow:none;font-variant-numeric:slashed-zero}
+#copyCode{margin-left:.6rem;vertical-align:middle}
 .row{display:flex;justify-content:space-between;gap:1rem;align-items:center;padding:.7rem 0;border-bottom:1px solid var(--line)}
 .row:last-of-type{border-bottom:0}
 .top{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:.8rem;font-size:.92rem}
@@ -256,7 +257,7 @@ hr{border-color:var(--line)}
 
 <section class="card"><h2>Mes ordinateurs</h2><div id="roses"></div>
 <button id="pairBtn">Lier un nouvel ordinateur</button>
-<div id="pairBox" class="hide"><div class="code" id="code" aria-live="polite"></div>
+<div id="pairBox" class="hide"><div class="code" id="code" aria-live="polite"></div><button id="copyCode" type="button" class="link">Copier</button>
 <p class="soft">Sur ton PC : Réglages de Rose → page 3 « Téléphone » → « Lier à mon compte… » (ou clic droit sur son icône), puis tape ce code. Il expire dans <strong id="left"></strong>.</p></div>
 <p id="pmsg" class="msg" role="status"></p></section>
 
@@ -383,6 +384,7 @@ $("wakeHeavy").onclick=function(){wake("lourde")};
 [].forEach.call(document.querySelectorAll(".sugg button"),function(b){b.onclick=function(){var f=b.getAttribute("data-fill");if(f){var m=$("msg");m.value=f;m.focus();m.setSelectionRange(8,8);return}send(b.getAttribute("data-say"))}});
 
 function stopPair(){clearInterval(tick);clearInterval(poll);$("pairBox").classList.add("hide")}
+$("copyCode").onclick=function(){var t=$("code").textContent;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){$("copyCode").textContent="Copié ✓";setTimeout(function(){$("copyCode").textContent="Copier"},1500)},function(){})};
 $("pairBtn").onclick=function(){stopPair();sb.rpc("create_pair_code").then(function(r){
 if(r.error){say("pmsg","Impossible de créer le code (limite de 5 ordinateurs ?).","err");return}
 var c=r.data,end=Date.now()+6e5,n0=Object.keys(names).length;
