@@ -151,13 +151,54 @@ hr{border-color:var(--line)}
 :root{--da-acc:rgb(240,138,184);--da-acc-rgb:240,138,184}h1{font-family:"Pixelify Sans",monospace !important;-webkit-text-stroke:0 !important;color:#f08ab8 !important;-webkit-text-fill-color:#f08ab8 !important;text-shadow:0 0 30px rgba(240,138,184,.4) !important;letter-spacing:.04em !important}</style><style>.news li{padding:.5rem 0;border-bottom:1px solid var(--line)}.news li:last-child{border-bottom:0}ol{padding-left:1.2rem}ol li{margin:.35rem 0}.hero .bubble{font-size:.95rem}</style>
 <style id="secret-css">
 /* ===== bêta secrète : couche "accès restreint" ===== */
-#sx-gate{position:fixed;inset:0;z-index:10050;background:#030205;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity .5s}
+#sx-gate{position:fixed;inset:0;z-index:10050;background:radial-gradient(ellipse at 50% 30%,#0b0a14 0%,#030205 70%);overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s}
 #sx-gate.out{opacity:0;pointer-events:none}
-#sx-gate pre{margin:0;padding:0 24px;font:13px/1.9 "JetBrains Mono",ui-monospace,monospace;color:rgba(242,239,233,.8);white-space:pre-wrap;max-width:34rem;width:100%}
-#sx-gate pre b{color:var(--da-acc);font-weight:600}
-#sx-gate pre .ok{color:#6fd49c}
-#sx-gate pre .cur{display:inline-block;width:.6em;height:1.1em;vertical-align:-3px;background:var(--da-acc);animation:da-blink 1s steps(2) infinite}
-#sx-gate .skip{position:absolute;bottom:22px;left:0;right:0;text-align:center;font:10px "JetBrains Mono",monospace;letter-spacing:.2em;color:rgba(242,239,233,.35);text-transform:uppercase}
+#sx-gate canvas.st{position:absolute;inset:0;width:100%;height:100%}
+#sx-pc{position:relative;width:min(92vw,620px);transform-origin:50% 40%;transition:transform .9s cubic-bezier(.6,0,.3,1),filter .9s;
+  animation:sx-arrive 1.2s cubic-bezier(.2,.7,.2,1) backwards}
+#sx-gate.zoom #sx-pc{transform:scale(5.5) translateY(4%);filter:brightness(1.6) blur(1px)}
+@keyframes sx-arrive{from{transform:translateY(40px) scale(.92);opacity:0}to{transform:none;opacity:1}}
+.sx-mon{position:relative;padding:7% 7.5% 11%;border-radius:10px 10px 6px 6px;
+  background:linear-gradient(170deg,#d7dfae 0%,#b9c68a 45%,#97a56c 100%);
+  box-shadow:inset 0 2px 0 rgba(255,255,240,.55),inset 0 -6px 14px rgba(40,50,20,.35),0 30px 60px rgba(0,0,0,.55)}
+.sx-mon::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.05) 0 1px,transparent 1px 3px)}
+.sx-bezel{background:#1d2112;padding:3.2%;border-radius:4px;box-shadow:inset 0 0 0 2px #2a3018,inset 0 6px 18px rgba(0,0,0,.7)}
+.sx-scr{position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:3px;cursor:default;
+  background:radial-gradient(ellipse at 50% 50%,#0a3a1c 0%,#03170a 62%,#010a04 100%);
+  box-shadow:inset 0 0 50px rgba(0,0,0,.85),inset 0 0 12px rgba(70,230,120,.25)}
+.sx-scr::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px);mix-blend-mode:multiply}
+.sx-scr::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;animation:sx-roll 6s linear infinite;
+  background:linear-gradient(180deg,transparent 0%,rgba(125,255,158,.06) 48%,transparent 56%)}
+@keyframes sx-roll{from{transform:translateY(-100%)}to{transform:translateY(100%)}}
+.sx-term{position:absolute;inset:0;padding:5.5% 6%;font:600 clamp(9px,2.35vw,15px)/1.62 "JetBrains Mono",ui-monospace,monospace;
+  color:#7dff9e;text-shadow:0 0 6px rgba(70,230,120,.75);white-space:pre;animation:sx-flk 5s infinite}
+@keyframes sx-flk{0%,96%,100%{opacity:1}97%{opacity:.86}98%{opacity:1}99%{opacity:.9}}
+.sx-term .cur{display:inline-block;width:.62em;height:1.05em;vertical-align:-.15em;background:#7dff9e;box-shadow:0 0 8px #46e678;animation:da-blink 1s steps(2) infinite}
+.sx-term .ok{color:#d9ffe3}
+#sx-gate .sx-enter{display:inline-block;margin-top:1.1em;padding:.45em 1.4em;background:#7dff9e !important;color:#021a0b !important;border:0 !important;border-radius:0 !important;cursor:pointer;
+  font:700 1.05em "JetBrains Mono",monospace;letter-spacing:.04em;box-shadow:0 0 16px rgba(70,230,120,.7);text-shadow:none;
+  opacity:0;transform:translateY(4px);transition:opacity .4s,transform .4s,background .2s,box-shadow .2s}
+#sx-gate .sx-enter.on{opacity:1;transform:none}
+#sx-gate .sx-enter:hover,#sx-gate .sx-enter:focus-visible{background:#d9ffe3 !important;box-shadow:0 0 30px rgba(125,255,158,.95);outline:none}
+.sx-hint{display:block;margin-top:.9em;font-size:.78em;opacity:0;transition:opacity .4s .2s}
+.sx-hint.on{opacity:.7}
+.sx-led{position:absolute;left:7.5%;bottom:4%;width:14%;height:3.2%;background:#f4a7c6;box-shadow:0 0 10px rgba(255,138,190,.8);border-radius:1px;
+  animation:sx-led 2.4s infinite}
+@keyframes sx-led{0%,100%{opacity:1}50%{opacity:.55}}
+.sx-base{position:relative;margin:-2px -5% 0;height:clamp(70px,17vw,120px);
+  background:linear-gradient(180deg,#c3cd93 0%,#a6b277 40%,#7f8b55 100%);
+  clip-path:polygon(4% 0,96% 0,100% 100%,0 100%);box-shadow:0 30px 60px rgba(0,0,0,.6)}
+.sx-base::before,.sx-base::after{content:"";position:absolute;right:13%;width:38%;height:9%;background:#14170c;box-shadow:inset 0 2px 3px rgba(0,0,0,.8)}
+.sx-base::before{top:38%}.sx-base::after{top:62%}
+.sx-under{position:relative;margin-top:22px;display:flex;flex-direction:column;align-items:center;gap:12px}
+#sx-gate .sx-under button{background:rgba(2,26,11,.85) !important;color:#7dff9e !important;border:1px solid rgba(125,255,158,.55) !important;padding:10px 20px;cursor:pointer;
+  font:600 12px "JetBrains Mono",monospace;letter-spacing:.2em;text-transform:uppercase;box-shadow:0 0 18px rgba(70,230,120,.25);border-radius:4px}
+#sx-gate .sx-under button:hover,#sx-gate .sx-under button:focus-visible{background:#7dff9e !important;color:#021a0b !important;outline:none}
+.sx-under small{font:10px "JetBrains Mono",monospace;letter-spacing:.2em;color:rgba(242,239,233,.35);text-transform:uppercase}
+@media (prefers-reduced-motion:reduce){#sx-pc,.sx-scr::after,.sx-term,.sx-led{animation:none !important}#sx-gate.zoom #sx-pc{transform:none}}
 .sx-tag{display:inline-block;margin:1.4rem 0 0;font:600 11px "JetBrains Mono",monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--da-acc);
   border:1px solid rgba(var(--da-acc-rgb),.5);padding:3px 8px;animation:sx-flick 4s infinite}
 .hero{position:relative;margin-top:2.6rem}
@@ -381,32 +422,48 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
       if (n++ < steps) setTimeout(tick, 45); else { h1.textContent = real; if (done) done(); }
     })();
   }
-  // ---- porte d'accès (à chaque visite) ----
-  if (!reduce) {
-    var g = document.createElement('div'); g.id = 'sx-gate';
-    g.innerHTML = '<pre></pre><div class="skip">clique pour passer</div>';
+  // ---- intro : l'ordinateur ROSE-OS (comme sur mon site), à chaque visite ----
+  (function(){
+    var g = document.createElement('div'); g.id = 'sx-gate'; g.setAttribute('role', 'dialog'); g.setAttribute('aria-label', 'Accès à la bêta');
+    g.innerHTML = '<canvas class="st"></canvas><div id="sx-pc"><div class="sx-mon"><div class="sx-bezel"><div class="sx-scr"><div class="sx-term"></div></div></div><span class="sx-led"></span></div><div class="sx-base"></div></div>'
+      + '<div class="sx-under"><button type="button" class="sx-go2 da-keep">Entrer dans la bêta →</button><small>réservé aux jeunes roses</small></div>';
     document.body.appendChild(g);
-    var pre = g.querySelector('pre');
-    var lines = ['<b>&gt;</b> connexion au canal privé…', '<b>&gt;</b> identification : <b>jeune rose</b>', '<b>&gt;</b> vérification de l’invitation… ✓',
-                 '<b>&gt;</b> déchiffrement : rose-2.3.bêta', '<span class="ok">&gt; ACCÈS AUTORISÉ</span>'];
-    var li = 0, ci = 0, html = '', closed = false;
-    function close(){ if (closed) return; closed = true; gl(500); g.classList.add('out'); setTimeout(function(){ g.remove(); }, 600); setTimeout(function(){ scramble(); }, 250); }
-    g.addEventListener('click', close);
-    (function type(){
-      if (closed) return;
-      if (li >= lines.length) { setTimeout(close, 550); return; }
-      var L = lines[li], plain = L.replace(/<[^>]+>/g, '');
-      if (ci <= plain.length) {
-        // affiche la ligne en cours caractère par caractère (sans casser les balises)
-        var shown = 0, part = '';
-        for (var i = 0; i < L.length; i++) { if (L[i] === '<') { var e = L.indexOf('>', i); part += L.slice(i, e + 1); i = e; continue; }
-          if (L[i] === '&') { var e2 = L.indexOf(';', i); if (shown < ci) part += L.slice(i, e2 + 1); shown++; i = e2; continue; }
-          if (shown < ci) part += L[i]; shown++; }
-        pre.innerHTML = html + part + '<span class="cur"></span>';
-        ci += 2; setTimeout(type, 16);
-      } else { html += L + '\n'; li++; ci = 0; if (li === lines.length) gl(260); setTimeout(type, 170); }
-    })();
-  } else { scramble(); }
+    document.documentElement.style.overflow = 'hidden';
+    // étoiles
+    var cv = g.querySelector('canvas'), cx = cv.getContext('2d'), stars = [], raf = 0;
+    function size(){ var d = Math.min(window.devicePixelRatio || 1, 1.5); cv.width = innerWidth * d; cv.height = innerHeight * d;
+      stars = []; for (var i = 0; i < 160; i++) stars.push([Math.random() * cv.width, Math.random() * cv.height, Math.random() * 1.4 + .3, Math.random() * 6]); }
+    size(); addEventListener('resize', size);
+    function sky(t){ cx.clearRect(0, 0, cv.width, cv.height);
+      for (var i = 0; i < stars.length; i++) { var s = stars[i]; cx.globalAlpha = .45 + .55 * Math.abs(Math.sin(t / 1400 + s[3]));
+        cx.fillStyle = '#f2efe9'; cx.fillRect(s[0], s[1], s[2], s[2]); }
+      if (!reduce) raf = requestAnimationFrame(sky); }
+    raf = requestAnimationFrame(sky);
+    // texte du terminal
+    var term = g.querySelector('.sx-term');
+    var TL = ['ROSE-OS v2.3.2  —  (c) 2026', '', 'Test mémoire ........ 640K OK', 'Chargement de ROSE .. OK',
+              'Canal ............... BÊTA SECRÈTE', 'Invitation .......... jeune rose ✓', 'Mise à jour ......... 2.3.2', '', '> acceder_a_la_beta'];
+    var full = TL.join('\n'), n = 0, closed = false;
+    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'sx-enter da-keep'; btn.textContent = '[ ENTRER DANS LA BÊTA ]';
+    var hint = document.createElement('span'); hint.className = 'sx-hint'; hint.textContent = 'clique sur le bouton  ▶';
+    function esc(t){ return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function done(){ term.innerHTML = esc(full) + '\n'; term.appendChild(btn); term.appendChild(hint);
+      requestAnimationFrame(function(){ btn.classList.add('on'); hint.classList.add('on'); }); gl(220); }
+    function type(){ if (closed) return;
+      if (n >= full.length) { done(); return; }
+      var ch = full[n]; n += (ch === '.' ? 3 : 1);
+      term.innerHTML = esc(full.slice(0, n)) + '<span class="cur"></span>';
+      setTimeout(type, ch === '\n' ? 110 : 10 + Math.random() * 14); }
+    if (reduce) done(); else setTimeout(type, 700);
+    function enter(){ if (closed) return; closed = true; gl(500);
+      g.classList.add('zoom'); setTimeout(function(){ g.classList.add('out'); }, reduce ? 0 : 650);
+      setTimeout(function(){ cancelAnimationFrame(raf); g.remove(); document.documentElement.style.overflow = ''; scramble(); }, reduce ? 300 : 1250); }
+    btn.addEventListener('click', enter);
+    g.querySelector('.sx-go2').addEventListener('click', enter);
+    addEventListener('keydown', function k(e){ if (closed) { removeEventListener('keydown', k); return; }
+      if (e.key === 'Enter' || e.key === 'Escape') { if (n < full.length && e.key === 'Enter') { n = full.length; } else enter(); } });
+    g.querySelector('.sx-scr').addEventListener('click', function(e){ if (e.target !== btn && n < full.length) n = full.length; });
+  })();
   // ---- glitchs réguliers + cartes qui grésillent ----
   if (!reduce) {
     setInterval(function(){ if (Math.random() < .45) gl(140 + Math.random() * 160); }, 5200);
