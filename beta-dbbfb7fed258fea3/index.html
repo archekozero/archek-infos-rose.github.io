@@ -220,7 +220,7 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
 <section class="card"><h2>Rosie sur Discord</h2>
 <p>Rosie ne se cherche pas dans Discord : on l’ajoute avec ce lien.</p>
 <a class="btn" href="https://discord.com/oauth2/authorize?client_id=1571068875888398406&amp;scope=applications.commands&amp;integration_type=1" target="_blank" rel="noopener">Ajouter Rosie à mon compte</a>
-<a class="btn" href="https://discord.com/oauth2/authorize?client_id=1571068875888398406&amp;scope=applications.commands&amp;integration_type=0" target="_blank" rel="noopener">Ajouter Rosie à un serveur</a>
+<a class="btn" href="https://discord.com/oauth2/authorize?client_id=1571068875888398406&amp;scope=bot+applications.commands&amp;permissions=3214336&amp;integration_type=0" target="_blank" rel="noopener">Ajouter Rosie à un serveur</a>
 <ol>
 <li>Clique sur <strong>Ajouter Rosie à mon compte</strong> (elle marchera dans tous tes serveurs), puis <strong>Autoriser</strong>.</li>
 <li>Dans Discord, tape <strong>/rose lier</strong> et ouvre le lien qu’elle te donne : connecte-toi au compte de ta Rose et confirme.</li>
@@ -248,22 +248,29 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
   var COLS = ['242,239,233', '242,239,233', '242,239,233', '220,225,240', ACC, ACC];
   function seed() {
     stars = [];
-    var n = Math.round(W * H / 2600);
+    var n = Math.min(520, Math.round(W * H / 3200));
     for (var i = 0; i < n; i++) {
       var d = Math.random();
       stars.push({ x: Math.random() * W, y: Math.random() * H, d: d, s: d > .93 ? 2 : 1,
         c: COLS[Math.floor(Math.random() * COLS.length)], p: Math.random() * 6.28, f: .5 + Math.random() * 2 });
     }
   }
+  var lastW = 0, lastH = 0;
   function resize() {
-    dpr = Math.min(2, window.devicePixelRatio || 1);
+    if (innerWidth === lastW && Math.abs(innerHeight - lastH) < 160 && stars.length) return;   // barre d'adresse mobile : on ne refait rien
+    lastW = innerWidth; lastH = innerHeight;
+    dpr = 1;
     W = innerWidth; H = innerHeight;
     cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.imageSmoothingEnabled = false;
     seed();
   }
   var t0 = performance.now();
+  var lastDraw = 0;
   function draw(now) {
+    requestAnimationFrame(draw);
+    if (document.hidden || now - lastDraw < 41) return;                  // 24 images/s suffisent pour des etoiles
+    lastDraw = now;
     var t = (now - t0) / 1000, sy = window.pageYOffset || 0;
     ctx.clearRect(0, 0, W, H);
     for (var i = 0; i < stars.length; i++) {
@@ -288,7 +295,6 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
       }
       if (o.l <= 0) shoots.splice(k, 1);
     }
-    requestAnimationFrame(draw);
   }
   addEventListener('resize', resize); resize(); requestAnimationFrame(draw);
 
