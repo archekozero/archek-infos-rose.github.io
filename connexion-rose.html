@@ -107,6 +107,16 @@ button:disabled{opacity:.5;cursor:default;transform:none}
 .sugg::-webkit-scrollbar{display:none}
 .sugg button{flex:none;margin:0;padding:.32rem .8rem;font-size:.86rem;font-weight:600;background:var(--glass);color:var(--ink);box-shadow:none;border:1px solid var(--edge);white-space:nowrap}
 .sugg button:hover{border-color:var(--pink);filter:none}
+.suggw{position:relative}
+.suggw .sa{position:absolute;top:50%;transform:translateY(-40%);z-index:2;width:2rem;height:2rem;padding:0;margin:0;border-radius:50%;font-size:1.1rem;line-height:1;
+  background:rgba(12,12,18,.9) !important;border:1px solid var(--edge) !important;color:var(--ink) !important;display:none;align-items:center;justify-content:center;cursor:pointer}
+.suggw .sa.l{left:-.4rem}.suggw .sa.r{right:-.4rem}
+.suggw.cl .sa.l,.suggw.cr .sa.r{display:flex}
+.sugg{cursor:grab;scroll-snap-type:x proximity;scroll-behavior:smooth;touch-action:pan-x}
+.sugg.drag{cursor:grabbing;scroll-behavior:auto;scroll-snap-type:none}
+.sugg button{scroll-snap-align:start}
+@media (hover:hover){.sugg{scrollbar-width:thin;scrollbar-color:rgba(240,138,184,.5) transparent}.sugg::-webkit-scrollbar{display:block;height:5px}.sugg::-webkit-scrollbar-thumb{background:rgba(240,138,184,.5);border-radius:9px}}
+
 .send{display:flex;gap:.5rem;margin-top:.55rem}.send input{flex:1;min-width:0;border-radius:999px;padding-left:1.1rem}.send button{margin:0;flex:none}
 /* journal */
 .feed{display:grid;grid-template-columns:repeat(auto-fill,minmax(13.5rem,1fr));gap:.8rem}
@@ -240,7 +250,8 @@ hr{border-color:var(--line)}
 <button id="wakeHeavy" type="button" class="alt">Rose lourde<small>Comprend mieux quand tu lui parles librement, mais met plus de temps à démarrer.</small></button>
 </div></div>
 <div id="chat" class="chat" aria-live="polite"></div>
-<div class="sugg" aria-label="Exemples">
+<div class="suggw" id="suggw"><button type="button" class="sa l" aria-label="Propositions précédentes">‹</button><button type="button" class="sa r" aria-label="Propositions suivantes">›</button>
+<div class="sugg" id="sugg" aria-label="Exemples">
 <button type="button" data-say="J'ai une question">J'ai une question</button>
 <button type="button" data-fill="Cherche  sur youtube">Chercher sur YouTube…</button>
 <button type="button" data-say="Proposition 1">Proposition 1</button>
@@ -251,7 +262,7 @@ hr{border-color:var(--line)}
 <button type="button" data-say="Mets un minuteur de 5 minutes">Minuteur 5 min</button>
 <button type="button" data-say="Quelle heure est-il ?">Quelle heure est-il ?</button>
 <button type="button" data-say="Rejoins un vocal">Rejoindre un vocal</button>
-</div>
+</div></div>
 <form id="sendForm" class="send"><input id="msg" maxlength="500" autocomplete="off" placeholder="Écris à Rose…" aria-label="Message pour Rose"><button id="sendBtn" type="submit">Envoyer</button></form>
 <p id="tmsg" class="msg" role="status"></p></section>
 
@@ -263,7 +274,7 @@ hr{border-color:var(--line)}
 <button id="dcYes" type="button">Oui, c’est mon compte</button> <button id="dcNo" type="button" class="link">Annuler</button></div>
 <div id="dcAsks" aria-live="polite"></div>
 <div id="dcList"></div>
-<p class="soft"><span id="dcSteps">1. Ajoute Rosie : <a href="https://discord.com/oauth2/authorize?client_id=1571068875888398406&amp;scope=applications.commands&amp;integration_type=1" target="_blank" rel="noopener">à ton compte</a> (partout) ou <a href="https://discord.com/oauth2/authorize?client_id=1571068875888398406&amp;scope=applications.commands&amp;integration_type=0" target="_blank" rel="noopener">à un serveur</a>.<br>
+<p class="soft"><span id="dcSteps">1. Ajoute Rosie : <a href="https://discord.com/oauth2/authorize?client_id=1571068875888398406&amp;scope=applications.commands&amp;integration_type=1" target="_blank" rel="noopener">à ton compte</a> (partout) ou <a href="https://discord.com/oauth2/authorize?client_id=1571068875888398406&amp;scope=bot+applications.commands&amp;permissions=3214336&amp;integration_type=0" target="_blank" rel="noopener">à un serveur</a>.<br>
 2. Dans Discord, tape <code>/rose lier</code> et ouvre le lien qu’elle te donne.<br></span>
 <code>/rose jeu nom:minecraft</code> lance un jeu sur ton PC (depuis Discord, Rose n’ouvre <strong>que des jeux</strong>). Quand quelqu’un d’autre demande un jeu ou t’envoie un message (<code>/rose envoyer</code>), la demande apparaît ici avec son nom et son @ : tu acceptes ou tu refuses.</p>
 <p id="dcmsg" class="msg" role="status"></p></section>
@@ -313,7 +324,7 @@ e.style.left=Math.round(rnd()*98)+"%";e.style.top=Math.round(rnd()*98)+"%";e.sty
 e._p=rnd()*6.28;e._f=.004+rnd()*.009;sky.appendChild(e)}
 var stars=[].slice.call(sky.children),busy=false;
 function twinkle(){busy=false;var y=window.scrollY||0;stars.forEach(function(e){e.style.opacity=(.15+.85*Math.abs(Math.sin(y*e._f+e._p))).toFixed(2)})}
-twinkle();if(!window.matchMedia("(prefers-reduced-motion:reduce)").matches)window.addEventListener("scroll",function(){if(!busy){busy=true;requestAnimationFrame(twinkle)}},{passive:true})})();
+})();
 
 if(CONFIG.SUPABASE_URL.indexOf("VOTRE")>-1){$("setup").classList.remove("hide")}else{start()}
 function start(){
@@ -362,7 +373,7 @@ var ok=el("button",null,"Accepter"),no=el("button","link bad","Refuser");
 function go(v){ok.disabled=no.disabled=true;sb.rpc("approve_command",{p_id:x.id,p_ok:v}).then(function(rr){
 if(rr.error||rr.data==="introuvable")say("dcmsg","Cette demande a expiré.","err");else{say("dcmsg",v?"Accepté : ta Rose s’en occupe~":"Refusé.","ok");dcNotify(x.id)}dcAsks()})}
 ok.onclick=function(){go(true)};no.onclick=function(){go(false)};var bx=el("div");bx.appendChild(ok);bx.appendChild(no);row.appendChild(bx);box.appendChild(row)})})}
-function dcStart(){dcLoad();dcAsks();clearInterval(dcTimer);dcTimer=setInterval(dcAsks,4000)}
+function dcStart(){dcLoad();dcAsks();clearInterval(dcTimer);dcTimer=setInterval(function(){if(!document.hidden)dcAsks()},4000)}
 function dcAsk(){if(!dcCode)return;$("dcConfirm").classList.remove("hide");$("dcName").textContent="…";$("dcCard").scrollIntoView({behavior:"smooth",block:"center"});
 sb.rpc("discord_code_info",{p_code:dcCode}).then(function(r){if(r.error||!r.data||!r.data.ok){$("dcConfirm").classList.add("hide");say("dcmsg","Ce lien a expiré ou a déjà servi : retape /rose lier dans Discord.","err");dcDone();return}
 $("dcName").textContent=dcWho(r.data.name,r.data.tag)})}
@@ -436,6 +447,18 @@ $("wakeLight").onclick=function(){wake("legere")};
 $("wakeHeavy").onclick=function(){wake("lourde")};
 [].forEach.call(document.querySelectorAll(".sugg button"),function(b){b.onclick=function(){var f=b.getAttribute("data-fill");if(f){var m=$("msg");m.value=f;m.focus();m.setSelectionRange(8,8);return}send(b.getAttribute("data-say"))}});
 
+(function(){var s=$("sugg"),w=$("suggw");if(!s)return;
+function upd(){var m=s.scrollWidth-s.clientWidth;w.classList.toggle("cl",s.scrollLeft>4);w.classList.toggle("cr",s.scrollLeft<m-4)}
+s.addEventListener("scroll",upd,{passive:true});addEventListener("resize",upd);setTimeout(upd,300);
+w.querySelector(".sa.l").onclick=function(){s.scrollBy({left:-s.clientWidth*.7})};
+w.querySelector(".sa.r").onclick=function(){s.scrollBy({left:s.clientWidth*.7})};
+s.addEventListener("wheel",function(e){if(Math.abs(e.deltaY)>Math.abs(e.deltaX)&&s.scrollWidth>s.clientWidth){s.scrollLeft+=e.deltaY;e.preventDefault()}},{passive:false});
+var down=false,x0=0,l0=0,moved=0;
+s.addEventListener("pointerdown",function(e){if(e.pointerType!=="mouse")return;down=true;moved=0;x0=e.clientX;l0=s.scrollLeft});
+addEventListener("pointermove",function(e){if(!down)return;var dx=e.clientX-x0;if(Math.abs(dx)>4){moved=1;s.classList.add("drag")}if(moved)s.scrollLeft=l0-dx});
+addEventListener("pointerup",function(){if(!down)return;down=false;setTimeout(function(){s.classList.remove("drag")},0)});
+s.addEventListener("click",function(e){if(moved){e.stopPropagation();e.preventDefault();moved=0}},true);})();
+
 function stopPair(){clearInterval(tick);clearInterval(poll);$("pairBox").classList.add("hide")}
 $("copyCode").onclick=function(){var t=$("code").textContent;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){$("copyCode").textContent="Copié ✓";setTimeout(function(){$("copyCode").textContent="Copier"},1500)},function(){})};
 $("pairBtn").onclick=function(){stopPair();sb.rpc("create_pair_code").then(function(r){
@@ -457,7 +480,7 @@ var l=r.data||[];return signed(l).then(function(m){var f=$("feed");f.textContent
 if(!l.length)f.appendChild(el("p","soft","Rien pour l’instant : donne un ordre à Rose, sa capture arrivera ici."))})})}
 function listen(){if(chan)return;chan=sb.channel("rose-events").on("postgres_changes",{event:"*",schema:"public",table:"commands"},chatSoon).on("postgres_changes",{event:"INSERT",schema:"public",table:"events"},function(p){
 var e=p.new;chatSoon();signed([e]).then(function(m){var f=$("feed");if(f.firstChild&&f.firstChild.tagName==="P")f.textContent="";f.prepend(card(e,m[e.image_path]))})}).subscribe()}
-function load(){loadRoses().then(loadFeed).then(loadChat).then(listen);clearInterval(rosesT);rosesT=setInterval(function(){loadRoses()},1e4)}
+function load(){loadRoses().then(loadFeed).then(loadChat).then(listen);clearInterval(rosesT);rosesT=setInterval(function(){if(!document.hidden)loadRoses()},1e4)}
 function stopAll(){stopPair();clearInterval(dcTimer);clearInterval(rosesT);roses=[];$("chat").textContent="";if(chan){sb.removeChannel(chan);chan=null}$("feed").textContent="";$("roses").textContent=""}
 $("clearBtn").onclick=function(){if(!confirm("Supprimer toutes les captures ?"))return;
 sb.from("events").select("image_path").then(function(r){var p=(r.data||[]).map(function(x){return x.image_path}).filter(Boolean);
@@ -478,22 +501,29 @@ $("zoom").onclick=function(){$("zoom").classList.add("hide")};
   var COLS = ['242,239,233', '242,239,233', '242,239,233', '220,225,240', ACC, ACC];
   function seed() {
     stars = [];
-    var n = Math.round(W * H / 2600);
+    var n = Math.min(520, Math.round(W * H / 3200));
     for (var i = 0; i < n; i++) {
       var d = Math.random();
       stars.push({ x: Math.random() * W, y: Math.random() * H, d: d, s: d > .93 ? 2 : 1,
         c: COLS[Math.floor(Math.random() * COLS.length)], p: Math.random() * 6.28, f: .5 + Math.random() * 2 });
     }
   }
+  var lastW = 0, lastH = 0;
   function resize() {
-    dpr = Math.min(2, window.devicePixelRatio || 1);
+    if (innerWidth === lastW && Math.abs(innerHeight - lastH) < 160 && stars.length) return;   // barre d'adresse mobile : on ne refait rien
+    lastW = innerWidth; lastH = innerHeight;
+    dpr = 1;
     W = innerWidth; H = innerHeight;
     cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.imageSmoothingEnabled = false;
     seed();
   }
   var t0 = performance.now();
+  var lastDraw = 0;
   function draw(now) {
+    requestAnimationFrame(draw);
+    if (document.hidden || now - lastDraw < 41) return;                  // 24 images/s suffisent pour des etoiles
+    lastDraw = now;
     var t = (now - t0) / 1000, sy = window.pageYOffset || 0;
     ctx.clearRect(0, 0, W, H);
     for (var i = 0; i < stars.length; i++) {
@@ -518,7 +548,6 @@ $("zoom").onclick=function(){$("zoom").classList.add("hide")};
       }
       if (o.l <= 0) shoots.splice(k, 1);
     }
-    requestAnimationFrame(draw);
   }
   addEventListener('resize', resize); resize(); requestAnimationFrame(draw);
 
