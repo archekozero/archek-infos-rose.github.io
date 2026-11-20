@@ -263,9 +263,9 @@ hr{border-color:var(--line)}
 <button id="dcYes" type="button">Oui, c’est mon compte</button> <button id="dcNo" type="button" class="link">Annuler</button></div>
 <div id="dcAsks" aria-live="polite"></div>
 <div id="dcList"></div>
-<p class="soft">1. Ajoute Rosie : <a href="https://discord.com/oauth2/authorize?client_id=1571068875888398406&amp;scope=applications.commands&amp;integration_type=1" target="_blank" rel="noopener">à ton compte</a> (partout) ou <a href="https://discord.com/oauth2/authorize?client_id=1571068875888398406&amp;scope=applications.commands&amp;integration_type=0" target="_blank" rel="noopener">à un serveur</a>.<br>
-2. Dans Discord, tape <code>/rose lier</code> et ouvre le lien qu’elle te donne.<br>
-3. <code>/rose jeu nom:minecraft</code> lance un jeu sur ton PC (depuis Discord, Rose n’ouvre <strong>que des jeux</strong>). Quand quelqu’un d’autre demande un jeu ou t’envoie un message (<code>/rose envoyer</code>), la demande apparaît ici avec son nom et son @ : tu acceptes ou tu refuses.</p>
+<p class="soft"><span id="dcSteps">1. Ajoute Rosie : <a href="https://discord.com/oauth2/authorize?client_id=1571068875888398406&amp;scope=applications.commands&amp;integration_type=1" target="_blank" rel="noopener">à ton compte</a> (partout) ou <a href="https://discord.com/oauth2/authorize?client_id=1571068875888398406&amp;scope=applications.commands&amp;integration_type=0" target="_blank" rel="noopener">à un serveur</a>.<br>
+2. Dans Discord, tape <code>/rose lier</code> et ouvre le lien qu’elle te donne.<br></span>
+<code>/rose jeu nom:minecraft</code> lance un jeu sur ton PC (depuis Discord, Rose n’ouvre <strong>que des jeux</strong>). Quand quelqu’un d’autre demande un jeu ou t’envoie un message (<code>/rose envoyer</code>), la demande apparaît ici avec son nom et son @ : tu acceptes ou tu refuses.</p>
 <p id="dcmsg" class="msg" role="status"></p></section>
 
 <section class="card"><h2>Mes ordinateurs</h2><div id="roses"></div>
@@ -347,7 +347,7 @@ l.forEach(function(x){var row=el("div","row"),d=el("div");d.appendChild(el("stro
 d.appendChild(el("div","soft small","relié le "+fmt(x.created_at)));row.appendChild(d);
 var b=el("button","link bad","Délier");b.onclick=function(){if(confirm("Délier ce compte Discord ? Il ne pourra plus lancer tes jeux."))sb.from("discord_links").delete().eq("discord_user_id",x.discord_user_id).then(dcLoad)};
 row.appendChild(b);box.appendChild(row)});
-if(!l.length)box.appendChild(el("p","soft small","Aucun compte Discord relié pour l’instant."))})}
+if(!l.length)box.appendChild(el("p","soft small","Aucun compte Discord relié pour l’instant."));$("dcSteps").classList.toggle("hide",l.length>0)})}
 function dcNotify(id){sb.auth.getSession().then(function(x){var t=x.data.session&&x.data.session.access_token;if(!t)return;
 fetch(CONFIG.SUPABASE_URL+"/functions/v1/discord-notify",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+t,"apikey":CONFIG.SUPABASE_ANON_KEY},body:JSON.stringify({id:id})}).catch(function(){})})}
 function dcAsks(){if(!uid)return;var since=new Date(Date.now()-15*60e3).toISOString();
