@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rose · Confidentialité</title>
+<meta name="description" content="Ce que Rose garde sur ton ordinateur, ce qui part sur internet, et comment tout effacer.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#07040d; --ink:#f6ebdd; --soft:#bcaecd; --pink:#f08ab8; --orange:#f7a25c; --ok:#6fd49c;
+    --glass:rgba(14,8,24,.66); --edge:rgba(255,235,245,.12);
+  }
+  *{box-sizing:border-box}
+  html{background:var(--night)}
+  body{margin:0;color:var(--ink);font:400 17px/1.65 "Nunito",system-ui,sans-serif;
+    background:
+      radial-gradient(900px 600px at 15% -10%,rgba(240,138,184,.22),transparent 60%),
+      radial-gradient(800px 600px at 110% 20%,rgba(140,100,255,.20),transparent 60%),
+      radial-gradient(700px 500px at 40% 120%,rgba(247,162,92,.14),transparent 60%),
+      var(--night);
+    min-height:100vh}
+  main{max-width:720px;margin:0 auto;padding:56px 22px 80px}
+  a{color:var(--pink)}
+  a:focus-visible{outline:2px solid var(--orange);outline-offset:3px;border-radius:4px}
+  .back{display:inline-block;margin-bottom:28px;color:var(--soft);text-decoration:none;font-weight:600}
+  .back:hover{color:var(--ink)}
+  h1{font:700 clamp(40px,8vw,64px)/1 "Pixelify Sans",monospace;margin:0 0 14px;color:var(--orange);
+    text-shadow:0 4px 0 #b4497c,0 0 28px rgba(240,138,184,.35)}
+  .lead{font-size:19px;color:var(--soft);margin:0 0 36px;max-width:60ch}
+  section{background:var(--glass);border:1px solid var(--edge);border-radius:22px;padding:24px 26px;margin:0 0 18px;
+    backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%)}
+  h2{font:700 24px/1.2 "Pixelify Sans",monospace;margin:0 0 12px;color:var(--ink)}
+  section.ok h2{color:var(--ok)} section.net h2{color:var(--pink)} section.stop h2{color:var(--orange)}
+  p{margin:0 0 12px} p:last-child{margin-bottom:0}
+  ul{margin:0;padding-left:20px} li{margin:0 0 8px} li:last-child{margin:0}
+  b{color:var(--ink)} .soft{color:var(--soft)}
+  code{font:600 14px/1 ui-monospace,Consolas,monospace;background:rgba(255,235,245,.08);padding:2px 6px;border-radius:6px}
+  footer{margin-top:36px;color:var(--soft);font-size:15px}
+  @media (max-width:520px){ section{padding:20px} body{font-size:16px} }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="./index.html">‹ Retour au site de Rose</a>
+  <h1>Confidentialité</h1>
+  <p class="lead">Rose vit sur ton ordinateur. Ici, tu trouves ce qu'elle garde, ce qui part sur internet (et seulement quand tu le demandes), et comment tout effacer.</p>
+
+  <section class="ok">
+    <h2>Ta voix ne quitte jamais ton PC</h2>
+    <p>La reconnaissance vocale (Vosk) tourne <b>entièrement sur ton ordinateur</b>. Rose n'enregistre pas le son et n'envoie jamais l'audio du micro sur internet.</p>
+    <p>Son journal (<code>rose_journal.txt</code>) est <b>discret par défaut</b> : il ne garde pas ce que tu dis, demandes ou écris. Il note seulement les erreurs et le nom des commandes reconnues. Un « Journal détaillé » existe pour déboguer, mais tu dois l'allumer toi-même (clic droit sur Rose).</p>
+  </section>
+
+  <section class="ok">
+    <h2>Ton écran : coupé par défaut</h2>
+    <p>L'observation de l'écran (Rose se fait discrète pendant un film ou un jeu) est <b>éteinte au départ</b>. Si tu l'allumes, l'analyse est <b>100 % locale</b> : aucune capture ne part sur internet.</p>
+    <p>Une capture n'est envoyée que si <b>tu</b> le demandes : « Rose, regarde mon écran » (à Claude, avec ta clé), ou si tu actives l'envoi des captures vers ton téléphone.</p>
+  </section>
+
+  <section>
+    <h2>Ce que Rose garde sur ton PC</h2>
+    <ul>
+      <li><b>Tes réglages</b>, dans <code>%APPDATA%\Rose\rose_settings.ini</code>. Ta clé API Claude et le jeton Discord y sont <b>chiffrés avec ton compte Windows</b> : ils ne servent à rien sur un autre PC.</li>
+      <li><b>Ce qu'elle apprend</b> : les mots mal entendus (<code>corrections.txt</code>), tes phrases (<code>appris.txt</code>), tes habitudes (<code>habitudes.txt</code> : quelle commande, quel jour, quelle heure) et tes rappels.</li>
+      <li><b>La liste de tes applis</b>, pour pouvoir les ouvrir à la voix.</li>
+    </ul>
+    <p class="soft">Rien de tout ça n'est envoyé à qui que ce soit.</p>
+  </section>
+
+  <section class="net">
+    <h2>Ce qui part sur internet, et quand</h2>
+    <ul>
+      <li><b>Claude (Anthropic)</b> : seulement quand tu dis « j'ai une question » ou « regarde mon écran », avec <b>ta propre clé API</b>.</li>
+      <li><b>La météo</b> : ta ville est devinée par ton adresse IP (ipwho.is), puis la météo est demandée à Open-Meteo.</li>
+      <li><b>Les réponses rapides</b> : certaines questions passent par DuckDuckGo.</li>
+      <li><b>Discord</b> : seulement si tu y connectes ton bot. Rose lit et envoie des messages dans tes salons.</li>
+      <li><b>Ton téléphone</b> : si tu lies Rose à ton compte, tes ordres, ses réponses (et les captures, si tu les actives) passent par le serveur de la web app (Supabase).</li>
+      <li><b>Le site de Rose</b> : une fois par jour, elle regarde s'il existe une nouvelle version, et toutes les 6 heures si l'autrice a publié un arrêt. Rien de personnel n'est envoyé.</li>
+      <li>Les recherches web, YouTube et Spotify s'ouvrent dans <b>ton</b> navigateur ou ton appli.</li>
+    </ul>
+    <p class="soft">Pas de publicité, pas de pistage, rien n'est vendu.</p>
+  </section>
+
+  <section class="stop">
+    <h2>L'arrêt à distance</h2>
+    <p>Rose est gratuite, et son autrice a des principes : elle ne doit pas servir à remplacer le travail de quelqu'un. Si elle est détournée, l'autrice peut publier sur ce site un message <b>signé</b> qui demande à toutes les Rose de se désinstaller.</p>
+    <p>Rose vérifie la signature avant d'agir : personne d'autre ne peut déclencher cet arrêt. Tout est écrit dans la licence.</p>
+  </section>
+
+  <section>
+    <h2>Tout effacer</h2>
+    <ul>
+      <li>« <b>Rose, oublie mes habitudes</b> » efface <code>habitudes.txt</code>.</li>
+      <li>« <b>Rose, oublie la phrase…</b> » retire une phrase apprise.</li>
+      <li>Pour tout le reste : <b>Paramètres Windows › Applications › Rose › Désinstaller</b>. Tu peux aussi supprimer le dossier <code>%APPDATA%\Rose</code>.</li>
+    </ul>
+  </section>
+
+  <footer>Une question ? Viens sur le serveur Discord de Rose. Dernière mise à jour : 20 novembre 2026.</footer>
+</main>
+</body>
+</html>
