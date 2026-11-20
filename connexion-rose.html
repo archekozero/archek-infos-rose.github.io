@@ -256,12 +256,16 @@ hr{border-color:var(--line)}
 <p id="tmsg" class="msg" role="status"></p></section>
 
 <section class="card" id="dcCard"><h2>Rosie sur Discord</h2>
-<div id="dcConfirm" class="hide"><p>Relier le compte Discord <strong id="dcName"></strong> à tes Rose ? Il pourra lancer tes jeux avec <code>/rose jeu</code>.</p>
-<button id="dcYes" type="button">Oui, relier</button> <button id="dcNo" type="button" class="link">Annuler</button></div>
+<div class="row"><div><strong id="dcState">Rosie Discord : éteinte</strong><div class="soft small">Éteinte, personne ne peut rien demander à ta Rose depuis Discord.</div></div>
+<button id="dcToggle" type="button">Allumer Rosie Discord</button></div>
+<div id="dcConfirm" class="hide" role="alert"><p>Relier le compte Discord <strong id="dcName"></strong> à tes Rose ?</p>
+<p class="soft small">Ne confirme que si c’est <strong>TON</strong> compte Discord : ce compte pourra lancer tes jeux.</p>
+<button id="dcYes" type="button">Oui, c’est mon compte</button> <button id="dcNo" type="button" class="link">Annuler</button></div>
+<div id="dcAsks" aria-live="polite"></div>
 <div id="dcList"></div>
 <p class="soft">1. Ajoute Rosie : <a href="https://discord.com/oauth2/authorize?client_id=1571068875888398406&amp;scope=applications.commands&amp;integration_type=1" target="_blank" rel="noopener">à ton compte</a> (partout) ou <a href="https://discord.com/oauth2/authorize?client_id=1571068875888398406&amp;scope=applications.commands&amp;integration_type=0" target="_blank" rel="noopener">à un serveur</a>.<br>
 2. Dans Discord, tape <code>/rose lier</code> et ouvre le lien qu’elle te donne.<br>
-3. Ensuite : <code>/rose jeu nom:minecraft</code> lance un jeu sur ton PC (depuis Discord, Rose n’ouvre <strong>que des jeux</strong>), et <code>/rose envoyer pour:@quelqu’un message:coucou</code> envoie un message à sa Rose. Pour refuser les messages : « Rose, refuse les messages Discord ».</p>
+3. <code>/rose jeu nom:minecraft</code> lance un jeu sur ton PC (depuis Discord, Rose n’ouvre <strong>que des jeux</strong>). Quand quelqu’un d’autre demande un jeu ou t’envoie un message (<code>/rose envoyer</code>), la demande apparaît ici avec son nom et son @ : tu acceptes ou tu refuses.</p>
 <p id="dcmsg" class="msg" role="status"></p></section>
 
 <section class="card"><h2>Mes ordinateurs</h2><div id="roses"></div>
@@ -315,7 +319,7 @@ if(CONFIG.SUPABASE_URL.indexOf("VOTRE")>-1){$("setup").classList.remove("hide")}
 function start(){
 var sb=supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_ANON_KEY),uid=null,names={},roses=[],rosesT=null,chan=null,poll=null,tick=null;
 function view(v){["auth","recover","app"].forEach(function(i){$(i).classList.toggle("hide",i!==v)})}
-function route(s){if(s&&s.user){$("heroSay").textContent="Coucou ! Qu’est-ce que je fais pour toi ?";if(uid!==s.user.id){uid=s.user.id;$("who").textContent=s.user.email;view("app");load();dcLoad();dcAsk()}else view("app")}
+function route(s){if(s&&s.user){$("heroSay").textContent="Coucou ! Qu’est-ce que je fais pour toi ?";if(uid!==s.user.id){uid=s.user.id;$("who").textContent=s.user.email;view("app");load();dcStart();dcAsk()}else view("app")}
 else{uid=null;stopAll();view("auth");$("heroSay").textContent=dcCode?"Connecte-toi pour relier ton compte Discord à ta Rose~":"Connecte-toi pour me parler depuis ton téléphone~"}}
 sb.auth.onAuthStateChange(function(ev,s){if(ev==="PASSWORD_RECOVERY"){view("recover");return}route(s)});
 function creds(){return{email:$("em").value.trim(),password:$("pw").value}}
@@ -329,20 +333,43 @@ sb.auth.updateUser({password:p}).then(function(r){if(r.error)say("rmsg",r.error.
 $("logout").onclick=function(){sb.auth.signOut()};
 
 
-// ---------- Rosie partagee : relier un compte Discord (lien donne par /rose lier) ----------
-var dcCode=(new URLSearchParams(location.search).get("discord")||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12);
-function dcLoad(){return sb.from("discord_links").select("discord_user_id,discord_name,created_at").order("created_at").then(function(r){
+// ---------- Rosie partagee : interrupteur, liaison d'un compte Discord, demandes a valider ----------
+var dcCode=(new URLSearchParams(location.search).get("discord")||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12),dcOn=false,dcTimer=null;
+function dcWho(n,t){return (n||"Compte Discord")+(t?" (@"+t+")":"")}
+function dcPaint(){$("dcState").textContent="Rosie Discord : "+(dcOn?"allumée":"éteinte");$("dcToggle").textContent=dcOn?"Éteindre Rosie Discord":"Allumer Rosie Discord";
+$("dcToggle").className=dcOn?"link bad":"";$("dcState").nextElementSibling.textContent=dcOn?"Allumée : tes demandes Discord passent, celles des autres attendent ton accord ici.":"Éteinte, personne ne peut rien demander à ta Rose depuis Discord."}
+function dcPref(){return sb.from("discord_prefs").select("enabled").maybeSingle().then(function(r){dcOn=!!(r.data&&r.data.enabled);dcPaint()})}
+$("dcToggle").onclick=function(){var v=!dcOn;sb.from("discord_prefs").upsert({user_id:uid,enabled:v,updated_at:new Date().toISOString()}).then(function(r){
+if(r.error)say("dcmsg","Impossible de changer l’interrupteur : "+r.error.message,"err");else{dcOn=v;dcPaint();say("dcmsg",v?"Rosie Discord est allumée~":"Rosie Discord est éteinte.","ok")}})};
+function dcLoad(){dcPref();return sb.from("discord_links").select("discord_user_id,discord_name,discord_tag,created_at").order("created_at").then(function(r){
 var box=$("dcList"),l=r.data||[];box.textContent="";
-l.forEach(function(x){var row=el("div","row"),d=el("div");d.appendChild(el("strong",null,x.discord_name||"Compte Discord"));
+l.forEach(function(x){var row=el("div","row"),d=el("div");d.appendChild(el("strong",null,dcWho(x.discord_name,x.discord_tag)));
 d.appendChild(el("div","soft small","relié le "+fmt(x.created_at)));row.appendChild(d);
-var b=el("button","link bad","Délier");b.onclick=function(){if(confirm("Délier ce compte Discord ? Il ne pourra plus donner d’ordres à Rose."))sb.from("discord_links").delete().eq("discord_user_id",x.discord_user_id).then(dcLoad)};
+var b=el("button","link bad","Délier");b.onclick=function(){if(confirm("Délier ce compte Discord ? Il ne pourra plus lancer tes jeux."))sb.from("discord_links").delete().eq("discord_user_id",x.discord_user_id).then(dcLoad)};
 row.appendChild(b);box.appendChild(row)});
 if(!l.length)box.appendChild(el("p","soft small","Aucun compte Discord relié pour l’instant."))})}
-function dcAsk(){if(!dcCode)return;$("dcConfirm").classList.remove("hide");$("dcName").textContent="(code "+dcCode+")";$("dcCard").scrollIntoView({behavior:"smooth",block:"center"})}
+function dcNotify(id){sb.auth.getSession().then(function(x){var t=x.data.session&&x.data.session.access_token;if(!t)return;
+fetch(CONFIG.SUPABASE_URL+"/functions/v1/discord-notify",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+t,"apikey":CONFIG.SUPABASE_ANON_KEY},body:JSON.stringify({id:id})}).catch(function(){})})}
+function dcAsks(){if(!uid)return;var since=new Date(Date.now()-15*60e3).toISOString();
+sb.from("commands").select("id,kind,text,from_name,from_tag,created_at").eq("status","approval").gte("created_at",since).order("created_at").then(function(r){
+var box=$("dcAsks"),l=r.data||[];box.textContent="";if(!l.length)return;
+box.appendChild(el("p",null,"Demandes Discord en attente :"));
+l.forEach(function(x){var row=el("div","row"),d=el("div");
+d.appendChild(el("strong",null,dcWho(x.from_name,x.from_tag)));
+d.appendChild(el("div","small",x.kind==="game"?"veut lancer le jeu « "+x.text+" » sur ton PC":"t’envoie : « "+x.text+" »"));
+d.appendChild(el("div","soft small",fmt(x.created_at)));row.appendChild(d);
+var ok=el("button",null,"Accepter"),no=el("button","link bad","Refuser");
+function go(v){ok.disabled=no.disabled=true;sb.rpc("approve_command",{p_id:x.id,p_ok:v}).then(function(rr){
+if(rr.error||rr.data==="introuvable")say("dcmsg","Cette demande a expiré.","err");else{say("dcmsg",v?"Accepté : ta Rose s’en occupe~":"Refusé.","ok");dcNotify(x.id)}dcAsks()})}
+ok.onclick=function(){go(true)};no.onclick=function(){go(false)};var bx=el("div");bx.appendChild(ok);bx.appendChild(no);row.appendChild(bx);box.appendChild(row)})})}
+function dcStart(){dcLoad();dcAsks();clearInterval(dcTimer);dcTimer=setInterval(dcAsks,4000)}
+function dcAsk(){if(!dcCode)return;$("dcConfirm").classList.remove("hide");$("dcName").textContent="…";$("dcCard").scrollIntoView({behavior:"smooth",block:"center"});
+sb.rpc("discord_code_info",{p_code:dcCode}).then(function(r){if(r.error||!r.data||!r.data.ok){$("dcConfirm").classList.add("hide");say("dcmsg","Ce lien a expiré ou a déjà servi : retape /rose lier dans Discord.","err");dcDone();return}
+$("dcName").textContent=dcWho(r.data.name,r.data.tag)})}
 function dcDone(){dcCode="";$("dcConfirm").classList.add("hide");history.replaceState(null,"",location.pathname+location.hash)}
 $("dcYes").onclick=function(){sb.rpc("link_discord",{p_code:dcCode}).then(function(r){
 if(r.error||!r.data||!r.data.ok)say("dcmsg","Ce lien a expiré ou a déjà servi : retape /rose lier dans Discord.","err");
-else say("dcmsg","C’est fait : "+(r.data.name||"ton compte Discord")+" peut lancer tes jeux avec /rose jeu~","ok");
+else say("dcmsg","C’est fait : "+dcWho(r.data.name,r.data.tag)+" est relié à ta Rose~"+(dcOn?"":" Pense à allumer Rosie Discord."),"ok");
 dcDone();dcLoad()})};
 $("dcNo").onclick=function(){dcDone();say("dcmsg","Rien n’a été relié.","")};
 function isOn(x){return x&&x.last_poll&&Date.now()-new Date(x.last_poll).getTime()<25e3}
@@ -364,7 +391,7 @@ o.querySelector("span").textContent=on?"Rose est en ligne":cw?"Rose est éteinte
 w.classList.toggle("hide",!cw||!!w.dataset.busy)}
 var ST={pending:"envoyé",running:"Rose s’en occupe…",done:"",expired:"pas reçu à temps (Rose était fermée ?)"};
 function line(who){var l=el("div","line "+who);if(who==="her"){var a=el("img","av");a.src=SPRITE;a.alt="";l.appendChild(a)}return l}
-function loadChat(){if(!uid)return Promise.resolve();return sb.from("commands").select("id,rose_id,text,status,created_at").order("created_at",{ascending:false}).limit(25).then(function(r){
+function loadChat(){if(!uid)return Promise.resolve();return sb.from("commands").select("id,rose_id,text,status,created_at").neq("status","approval").order("created_at",{ascending:false}).limit(25).then(function(r){
 var cmds=(r.data||[]).reverse(),ids=cmds.map(function(c){return c.id});
 var q=ids.length?sb.from("events").select("id,command_id,text,image_path,created_at").in("command_id",ids).order("created_at"):Promise.resolve({data:[]});
 // messages que Rose envoie d'elle-meme (message transmis depuis Discord, minuteur, alerte...) : aussi dans la conversation
@@ -431,7 +458,7 @@ if(!l.length)f.appendChild(el("p","soft","Rien pour l’instant : donne un ordre
 function listen(){if(chan)return;chan=sb.channel("rose-events").on("postgres_changes",{event:"*",schema:"public",table:"commands"},chatSoon).on("postgres_changes",{event:"INSERT",schema:"public",table:"events"},function(p){
 var e=p.new;chatSoon();signed([e]).then(function(m){var f=$("feed");if(f.firstChild&&f.firstChild.tagName==="P")f.textContent="";f.prepend(card(e,m[e.image_path]))})}).subscribe()}
 function load(){loadRoses().then(loadFeed).then(loadChat).then(listen);clearInterval(rosesT);rosesT=setInterval(function(){loadRoses()},1e4)}
-function stopAll(){stopPair();clearInterval(rosesT);roses=[];$("chat").textContent="";if(chan){sb.removeChannel(chan);chan=null}$("feed").textContent="";$("roses").textContent=""}
+function stopAll(){stopPair();clearInterval(dcTimer);clearInterval(rosesT);roses=[];$("chat").textContent="";if(chan){sb.removeChannel(chan);chan=null}$("feed").textContent="";$("roses").textContent=""}
 $("clearBtn").onclick=function(){if(!confirm("Supprimer toutes les captures ?"))return;
 sb.from("events").select("image_path").then(function(r){var p=(r.data||[]).map(function(x){return x.image_path}).filter(Boolean);
 return(p.length?sb.storage.from("captures").remove(p):Promise.resolve()).then(function(){return sb.from("events").delete().eq("user_id",uid)})}).then(function(){loadFeed();chatSoon()})};
