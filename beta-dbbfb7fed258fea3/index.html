@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" data-da-page="Bêta">
+<html lang="fr" data-da-page="BÊTA // CONFIDENTIEL">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -149,16 +149,52 @@ hr{border-color:var(--line)}
 #da-fade{position:fixed;inset:0;z-index:9994;background:#000;opacity:0;pointer-events:none;transition:opacity .28s}
 @media (prefers-reduced-motion:reduce){h1:hover,h1.da-glitch{animation:none}#da-hud .hint{animation:none}}
 :root{--da-acc:rgb(240,138,184);--da-acc-rgb:240,138,184}h1{font-family:"Pixelify Sans",monospace !important;-webkit-text-stroke:0 !important;color:#f08ab8 !important;-webkit-text-fill-color:#f08ab8 !important;text-shadow:0 0 30px rgba(240,138,184,.4) !important;letter-spacing:.04em !important}</style><style>.news li{padding:.5rem 0;border-bottom:1px solid var(--line)}.news li:last-child{border-bottom:0}ol{padding-left:1.2rem}ol li{margin:.35rem 0}.hero .bubble{font-size:.95rem}</style>
+<style id="secret-css">
+/* ===== bêta secrète : couche "accès restreint" ===== */
+#sx-gate{position:fixed;inset:0;z-index:10050;background:#030205;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity .5s}
+#sx-gate.out{opacity:0;pointer-events:none}
+#sx-gate pre{margin:0;padding:0 24px;font:13px/1.9 "JetBrains Mono",ui-monospace,monospace;color:rgba(242,239,233,.8);white-space:pre-wrap;max-width:34rem;width:100%}
+#sx-gate pre b{color:var(--da-acc);font-weight:600}
+#sx-gate pre .ok{color:#6fd49c}
+#sx-gate pre .cur{display:inline-block;width:.6em;height:1.1em;vertical-align:-3px;background:var(--da-acc);animation:da-blink 1s steps(2) infinite}
+#sx-gate .skip{position:absolute;bottom:22px;left:0;right:0;text-align:center;font:10px "JetBrains Mono",monospace;letter-spacing:.2em;color:rgba(242,239,233,.35);text-transform:uppercase}
+.sx-tag{display:inline-block;margin:1.4rem 0 0;font:600 11px "JetBrains Mono",monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--da-acc);
+  border:1px solid rgba(var(--da-acc-rgb),.5);padding:3px 8px;animation:sx-flick 4s infinite}
+.hero{position:relative;margin-top:2.6rem}
+.sx-stamp{position:absolute;right:-4px;top:-34px;transform:rotate(-9deg);font:400 22px "Anton",Impact,sans-serif;letter-spacing:.12em;color:rgba(255,72,104,.85);
+  border:3px solid rgba(255,72,104,.75);padding:2px 12px;text-transform:uppercase;mix-blend-mode:screen;pointer-events:none;
+  -webkit-mask:repeating-linear-gradient(90deg,#000 0 7px,rgba(0,0,0,.55) 7px 9px);mask:repeating-linear-gradient(90deg,#000 0 7px,rgba(0,0,0,.55) 7px 9px)}
+h1.sx{position:relative}
+h1.sx::before,h1.sx::after{content:attr(data-text);position:absolute;left:0;top:0;width:100%;pointer-events:none;
+  -webkit-text-fill-color:currentColor;color:transparent;opacity:0}
+h1.sx::before{-webkit-text-fill-color:#3ff2ff;color:#3ff2ff;animation:sx-rgb1 3.2s infinite steps(1)}
+h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2s infinite steps(1)}
+@keyframes sx-rgb1{0%,86%,100%{opacity:0;transform:none;clip-path:inset(0 0 0 0)}
+  88%{opacity:.8;transform:translate(-3px,1px);clip-path:inset(10% 0 55% 0)}90%{opacity:.8;transform:translate(4px,-1px);clip-path:inset(60% 0 8% 0)}
+  92%{opacity:.7;transform:translate(-2px,0);clip-path:inset(30% 0 40% 0)}94%{opacity:0}}
+@keyframes sx-rgb2{0%,87%,100%{opacity:0;transform:none;clip-path:inset(0 0 0 0)}
+  89%{opacity:.8;transform:translate(3px,0);clip-path:inset(45% 0 20% 0)}91%{opacity:.8;transform:translate(-4px,1px);clip-path:inset(5% 0 70% 0)}
+  93%{opacity:.6;transform:translate(2px,-1px);clip-path:inset(70% 0 2% 0)}95%{opacity:0}}
+@keyframes sx-flick{0%,19%,22%,62%,64%,100%{opacity:1}20%,63%{opacity:.25}}
+.card.sx-f{animation:sx-cflick .22s steps(2) 1}
+@keyframes sx-cflick{0%{opacity:1;transform:none}50%{opacity:.55;transform:translateX(3px) skewX(-1deg)}100%{opacity:1;transform:none}}
+.redact{background:#f2efe9;color:transparent !important;border-radius:1px;padding:0 .2em;transition:background .3s,color .3s;cursor:help;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.redact:hover,.redact:focus{background:transparent;color:var(--da-acc) !important}
+.sx-code{font:11px "JetBrains Mono",monospace;letter-spacing:.14em;color:rgba(242,239,233,.4);text-transform:uppercase}
+@media (prefers-reduced-motion:reduce){h1.sx::before,h1.sx::after,.sx-tag{animation:none !important}}
+</style>
 </head>
 <body>
 <div id="sky" aria-hidden="true"></div>
 <main>
 <div class="hero">
 <img class="rose" alt="Rose, petit personnage en pixel art aux cheveux orange et au pull rose" width="84" height="126" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABgCAYAAACtxXToAAACk0lEQVR42u2cMUjDQBSGL1GkYGNQHCoKASdL3Ry0kyAiOjiJk5Ozbo46dtRNZycnEQcHi6jQqXYoLkqdxEwKCqKpKAWpU4ac9eLxcjlr/rell97lvrz/3XvXNIZt20yn5bL55nWtbOga32QJN1P33Z/dOGa5bL4JD0gaAP/uM8aYTi8wdU1e5nOVZsS5CvgT9O98KysW5hhjjMW1MsQC4DcT1wUCHqAjEWoFIu6Jaw2CP01SR0aobRm8rpUN/64XC3NMVzqc+ETIQDEED7AZaoEEW6fqATzPI+X3lmUZ8AAAAIC/GwPCNP65v0Tqv2Nxr6kyRkACAIBM0Fas8Y+Q9hQ1RpDyCEgAABADbKHm6RpnSmOAbIzgYwIkAABJjwGmaYZo/iPiIVNaJ8zHBEgAALAfwBRrHh4AAADQTjGgtHUZOJ5cy2ut96lW2irDAwAAAAj7AVlnJNC+M9CQjBF6Nb5y3xU4rrk38AAAAABBDBjqGyT9ns/HiKmLW+H55xPDwnbZ7/OahwcAAADI1QL8Ojk6Pi7s4PPhRWpA99kLHDc3J8TnHwfPd3ot0oSRB0ACABDvc4J36zkpzfPGn8/3d3v2Dg8AAADQGAM6MvwzRo/wAAAAgH+0J8hbWG1wValI1ftU4/cL+D1MPvfHM0KQAACInxHadnaFX5jv74n2Ck5nxO3TJ1LdHT29CttX3WV4AAAAQIz7AaotTPPwAAAAAFotwOcF5DwgZN1vjB4Gjrsy3aThnOoCagFIAAAIeUDkuT88AAAAoK3/O+yOHShd93mTzQPC1n14AAAAgFwewGvIqS4IY0Lj4S2oYeIFfuuPWBvAAwAAAKJ9mxz1XWFRm+x7hbAKqOw8nU6T3wRXr9eVetgXgBfaVdpW/wMAAAAASUVORK5CYII=">
-<div class="bubble">Coucou~ Tu fais partie des premières à me tester 🌸</div>
+<div class="bubble">Psst~ Tu fais partie des premières à me tester. Ne le dis à personne 🌸</div>
+<span class="sx-stamp" aria-hidden="true">Classifié</span>
 </div>
+<span class="sx-tag">// Niveau d’accès : jeune rose</span>
 
-<h1>Bienvenue sur la bêta</h1>
+<h1 class="sx" data-text="Bienvenue sur la bêta">Bienvenue sur la bêta</h1>
 <p class="lead">… à vous, jeunes roses. Voici Rose 2.3 avant tout le monde : merci de me la faire essayer et de me dire ce qui coince.</p>
 <a class="btn" href="Rose-2.3.zip" download>Télécharger Rose 2.3 (zip, 57 Mo)</a> <a class="btn" href="Rose-2.3-notice.pdf" target="_blank" rel="noopener">La notice (PDF)</a>
 
@@ -194,7 +230,8 @@ hr{border-color:var(--line)}
 </section>
 
 <section class="card"><h2>Chut</h2>
-<p>Cette page est cachée : garde le lien pour toi, ne le partage pas encore. Un souci, une idée ? Dis-le-moi directement.</p>
+<p>Cette page <span class="redact" tabindex="0">n’existe pas</span>. Garde le lien pour toi, ne le partage <span class="redact" tabindex="0">surtout</span> pas encore. Un souci, une idée ? Dis-le-moi directement, <span class="redact" tabindex="0">en secret</span>.</p>
+<p class="sx-code">Transmission #2.3 · canal privé · <span class="redact" tabindex="0">archek</span></p>
 <p style="font-size:.85rem;word-break:break-all">Contrôle du fichier (SHA-256) : 4ef9d4d0a732d474a3314d98fbf5c85b77b7b991908949bc044bd3506a4bfae8</p>
 </section>
 </main>
@@ -320,5 +357,57 @@ hr{border-color:var(--line)}
   });
   addEventListener('pageshow', function () { fade.style.opacity = 0; });
 })();
-</script></body>
+</script><script id="secret-js">
+(function(){
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var gl = function(ms){ if (window.daGlitch) window.daGlitch(ms); };
+  // ---- titre qui se "déchiffre" ----
+  var h1 = document.querySelector('h1.sx'), real = h1 ? h1.getAttribute('data-text') : '';
+  function scramble(done){
+    if (!h1 || reduce) { if (done) done(); return; }
+    var chars = '▓▒░#%&@$*<>/\\|01', n = 0, steps = 26;
+    (function tick(){
+      var k = n / steps, out = '';
+      for (var i = 0; i < real.length; i++) out += (real[i] === ' ' || i < real.length * k) ? real[i] : chars[Math.floor(Math.random() * chars.length)];
+      h1.textContent = out;
+      if (n++ < steps) setTimeout(tick, 45); else { h1.textContent = real; if (done) done(); }
+    })();
+  }
+  // ---- porte d'accès (à chaque visite) ----
+  if (!reduce) {
+    var g = document.createElement('div'); g.id = 'sx-gate';
+    g.innerHTML = '<pre></pre><div class="skip">clique pour passer</div>';
+    document.body.appendChild(g);
+    var pre = g.querySelector('pre');
+    var lines = ['<b>&gt;</b> connexion au canal privé…', '<b>&gt;</b> identification : <b>jeune rose</b>', '<b>&gt;</b> vérification de l’invitation… ✓',
+                 '<b>&gt;</b> déchiffrement : rose-2.3.bêta', '<span class="ok">&gt; ACCÈS AUTORISÉ</span>'];
+    var li = 0, ci = 0, html = '', closed = false;
+    function close(){ if (closed) return; closed = true; gl(500); g.classList.add('out'); setTimeout(function(){ g.remove(); }, 600); setTimeout(function(){ scramble(); }, 250); }
+    g.addEventListener('click', close);
+    (function type(){
+      if (closed) return;
+      if (li >= lines.length) { setTimeout(close, 550); return; }
+      var L = lines[li], plain = L.replace(/<[^>]+>/g, '');
+      if (ci <= plain.length) {
+        // affiche la ligne en cours caractère par caractère (sans casser les balises)
+        var shown = 0, part = '';
+        for (var i = 0; i < L.length; i++) { if (L[i] === '<') { var e = L.indexOf('>', i); part += L.slice(i, e + 1); i = e; continue; }
+          if (L[i] === '&') { var e2 = L.indexOf(';', i); if (shown < ci) part += L.slice(i, e2 + 1); shown++; i = e2; continue; }
+          if (shown < ci) part += L[i]; shown++; }
+        pre.innerHTML = html + part + '<span class="cur"></span>';
+        ci += 2; setTimeout(type, 16);
+      } else { html += L + '\n'; li++; ci = 0; if (li === lines.length) gl(260); setTimeout(type, 170); }
+    })();
+  } else { scramble(); }
+  // ---- glitchs réguliers + cartes qui grésillent ----
+  if (!reduce) {
+    setInterval(function(){ if (Math.random() < .45) gl(140 + Math.random() * 160); }, 5200);
+    var cards = [].slice.call(document.querySelectorAll('.card'));
+    setInterval(function(){ var c = cards[Math.floor(Math.random() * cards.length)]; if (!c) return;
+      c.classList.remove('sx-f'); void c.offsetWidth; c.classList.add('sx-f'); }, 3300);
+    if (h1) h1.addEventListener('mouseenter', function(){ scramble(); });
+  }
+})();
+</script>
+</body>
 </html>
