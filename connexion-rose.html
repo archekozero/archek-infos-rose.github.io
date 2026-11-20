@@ -256,12 +256,12 @@ hr{border-color:var(--line)}
 <p id="tmsg" class="msg" role="status"></p></section>
 
 <section class="card" id="dcCard"><h2>Rosie sur Discord</h2>
-<div id="dcConfirm" class="hide"><p>Relier le compte Discord <strong id="dcName"></strong> à tes Rose ? Il pourra leur donner des ordres avec <code>/rose ordre</code>.</p>
+<div id="dcConfirm" class="hide"><p>Relier le compte Discord <strong id="dcName"></strong> à tes Rose ? Il pourra lancer tes jeux avec <code>/rose jeu</code>.</p>
 <button id="dcYes" type="button">Oui, relier</button> <button id="dcNo" type="button" class="link">Annuler</button></div>
 <div id="dcList"></div>
 <p class="soft">1. Ajoute Rosie : <a href="https://discord.com/oauth2/authorize?client_id=1571068875888398406&amp;scope=applications.commands&amp;integration_type=1" target="_blank" rel="noopener">à ton compte</a> (partout) ou <a href="https://discord.com/oauth2/authorize?client_id=1571068875888398406&amp;scope=applications.commands&amp;integration_type=0" target="_blank" rel="noopener">à un serveur</a>.<br>
 2. Dans Discord, tape <code>/rose lier</code> et ouvre le lien qu’elle te donne.<br>
-3. Ensuite : <code>/rose ordre texte:ouvre spotify</code>. Seule ta Rose t’obéit, et ses réponses ne sont visibles que par toi.</p>
+3. Ensuite : <code>/rose jeu nom:minecraft</code> lance un jeu sur ton PC (depuis Discord, Rose n’ouvre <strong>que des jeux</strong>), et <code>/rose envoyer pour:@quelqu’un message:coucou</code> envoie un message à sa Rose. Pour refuser les messages : « Rose, refuse les messages Discord ».</p>
 <p id="dcmsg" class="msg" role="status"></p></section>
 
 <section class="card"><h2>Mes ordinateurs</h2><div id="roses"></div>
@@ -342,7 +342,7 @@ function dcAsk(){if(!dcCode)return;$("dcConfirm").classList.remove("hide");$("dc
 function dcDone(){dcCode="";$("dcConfirm").classList.add("hide");history.replaceState(null,"",location.pathname+location.hash)}
 $("dcYes").onclick=function(){sb.rpc("link_discord",{p_code:dcCode}).then(function(r){
 if(r.error||!r.data||!r.data.ok)say("dcmsg","Ce lien a expiré ou a déjà servi : retape /rose lier dans Discord.","err");
-else say("dcmsg","C’est fait : "+(r.data.name||"ton compte Discord")+" peut parler à ta Rose avec /rose ordre~","ok");
+else say("dcmsg","C’est fait : "+(r.data.name||"ton compte Discord")+" peut lancer tes jeux avec /rose jeu~","ok");
 dcDone();dcLoad()})};
 $("dcNo").onclick=function(){dcDone();say("dcmsg","Rien n’a été relié.","")};
 function isOn(x){return x&&x.last_poll&&Date.now()-new Date(x.last_poll).getTime()<25e3}
