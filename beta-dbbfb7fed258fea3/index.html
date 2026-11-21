@@ -151,6 +151,7 @@ hr{border-color:var(--line)}
 :root{--da-acc:rgb(240,138,184);--da-acc-rgb:240,138,184}h1{font-family:"Pixelify Sans",monospace !important;-webkit-text-stroke:0 !important;color:#f08ab8 !important;-webkit-text-fill-color:#f08ab8 !important;text-shadow:0 0 30px rgba(240,138,184,.4) !important;letter-spacing:.04em !important}</style><style>.news li{padding:.5rem 0;border-bottom:1px solid var(--line)}.news li:last-child{border-bottom:0}ol{padding-left:1.2rem}ol li{margin:.35rem 0}.hero .bubble{font-size:.95rem}</style>
 <style id="secret-css">
 /* ===== bêta secrète : couche "accès restreint" ===== */
+.rv-badge{margin:12px 0 0;font:12px "JetBrains Mono",monospace;color:var(--muted,#aaa)}.rv-badge strong{color:#7dff9e;text-shadow:0 0 8px rgba(70,230,120,.5)}
 #sx-gate{position:fixed;inset:0;z-index:10050;background:radial-gradient(ellipse at 50% 30%,#0b0a14 0%,#030205 70%);overflow:hidden;
   display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s}
 #sx-gate.out{opacity:0;pointer-events:none}
@@ -224,6 +225,13 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
 .sx-code{font:11px "JetBrains Mono",monospace;letter-spacing:.14em;color:rgba(242,239,233,.4);text-transform:uppercase}
 @media (prefers-reduced-motion:reduce){h1.sx::before,h1.sx::after,.sx-tag{animation:none !important}}
 </style>
+<script>
+(function(){ try { var x = new XMLHttpRequest(); x.open('GET', 'version.txt?t=' + Date.now(), false); x.send();
+  var v = (x.responseText || '').split(/\r?\n/)[0].trim();
+  if (/^\d+(\.\d+){1,3}$/.test(v)) { window.ROSE_V = v;
+    document.addEventListener('DOMContentLoaded', function(){ document.querySelectorAll('.rv').forEach(function(e){ e.textContent = v; }); }); }
+} catch (e) {} })();
+</script>
 </head>
 <body>
 <div id="sky" aria-hidden="true"></div>
@@ -236,8 +244,9 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
 <span class="sx-tag">// Niveau d’accès : jeune rose</span>
 
 <h1 class="sx" data-text="Bienvenue sur la bêta">Bienvenue sur la bêta</h1>
-<p class="lead">… à vous, jeunes roses. Voici Rose 2.3.3 avant tout le monde : merci de me la faire essayer et de me dire ce qui coince.</p>
-<a class="btn" href="Rose-2.3.zip" download>Télécharger Rose 2.3 (zip, 57 Mo)</a> <a class="btn" href="Rose-2.3-notice.pdf" target="_blank" rel="noopener">La notice (PDF)</a>
+<p class="lead">… à vous, jeunes roses. Voici Rose <span class="rv">2.3.3</span> avant tout le monde : merci de me la faire essayer et de me dire ce qui coince.</p>
+<a class="btn" href="Rose-2.3.zip" download>Télécharger Rose <span class="rv">2.3.3</span> (zip, 57 Mo)</a> <a class="btn" href="Rose-2.3-notice.pdf" target="_blank" rel="noopener">La notice (PDF)</a>
+<p class="rv-badge">Version en ligne : <strong>Rose <span class="rv">2.3.3</span></strong> · si tu l’as déjà, elle se met à jour toute seule.</p>
 
 <section class="card"><h2>Installer</h2>
 <ol>
@@ -442,8 +451,8 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
     raf = requestAnimationFrame(sky);
     // texte du terminal
     var term = g.querySelector('.sx-term');
-    var TL = ['ROSE-OS v2.3.3  —  (c) 2026', '', 'Test mémoire ........ 640K OK', 'Chargement de ROSE .. OK',
-              'Canal ............... BÊTA SECRÈTE', 'Invitation .......... jeune rose ✓', 'Mise à jour ......... 2.3.3', '', '> acceder_a_la_beta'];
+    var TL = ['ROSE-OS v' + (window.ROSE_V || '2.3.3') + '  —  (c) 2026', '', 'Test mémoire ........ 640K OK', 'Chargement de ROSE .. OK',
+              'Canal ............... BÊTA SECRÈTE', 'Invitation .......... jeune rose ✓', 'Mise à jour ......... ' + (window.ROSE_V || '2.3.3'), '', '> acceder_a_la_beta'];
     var full = TL.join('\n'), n = 0, closed = false;
     var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'sx-enter da-keep'; btn.textContent = '[ ENTRER DANS LA BÊTA ]';
     var hint = document.createElement('span'); hint.className = 'sx-hint'; hint.textContent = 'clique sur le bouton  ▶';
