@@ -244,9 +244,9 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
 <span class="sx-tag">// Niveau d’accès : jeune rose</span>
 
 <h1 class="sx" data-text="Bienvenue sur la bêta">Bienvenue sur la bêta</h1>
-<p class="lead">… à vous, jeunes roses. Voici Rose <span class="rv">2.3.4</span> avant tout le monde : merci de me la faire essayer et de me dire ce qui coince.</p>
-<a class="btn" href="Rose-2.3.zip" download>Télécharger Rose <span class="rv">2.3.4</span> (zip, 57 Mo)</a> <a class="btn" href="Rose-2.3-notice.pdf" target="_blank" rel="noopener">La notice (PDF)</a>
-<p class="rv-badge">Version en ligne : <strong>Rose <span class="rv">2.3.4</span></strong> · si tu l’as déjà, elle se met à jour toute seule.</p>
+<p class="lead">… à vous, jeunes roses. Voici Rose <span class="rv">2.3.5</span> avant tout le monde : merci de me la faire essayer et de me dire ce qui coince.</p>
+<a class="btn" href="Rose-2.3.zip" download>Télécharger Rose <span class="rv">2.3.5</span> (zip, 57 Mo)</a> <a class="btn" href="Rose-2.3-notice.pdf" target="_blank" rel="noopener">La notice (PDF)</a>
+<p class="rv-badge">Version en ligne : <strong>Rose <span class="rv">2.3.5</span></strong> · si tu l’as déjà, elle se met à jour toute seule.</p>
 
 <section class="card"><h2>Installer</h2>
 <ol>
@@ -260,6 +260,7 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
 
 <section class="card"><h2>Quoi de neuf</h2>
 <ul class="news">
+<li><strong>Nouveau en 2.3.5</strong> : le micro ne se bloque plus (Rose ne « décroche » plus), elle n'apprend plus de phrases toute seule sans te demander, « like » est mieux compris, et elle n'ouvre plus une appli au hasard sur un mot courant.</li>
 <li><strong>Nouveau en 2.3.4</strong> : Rose t'entend mieux (et baisse la musique quand tu l'appelles), « musique » met en pause ou relance, « musique suivante » et « like » marchent, « Rose, apprends » + une page des Réglages pour modifier ce qu'elle a appris, et elle retrouve tes applis et les icônes du bureau même avec un bout du nom.</li>
 <li><strong>Nouveau en 2.3.3</strong> : barre de son et cœur « liké » dans le petit lecteur, « arrête la musique » / « lance la musique » qui pilotent directement Spotify, et une grande bulle quand Rose a beaucoup à dire.</li>
 <li><strong>Nouveau en 2.3.2</strong> : elle réagit dès que tu dis « Rose » (même si tu parles vite), la musique se lance en fond sans afficher Spotify, « skip » marche, « Rose, apprends » pour lui apprendre tes mots, « proposition 2 » ne clique plus à côté, et « mets la vidéo en pause » / « relance la vidéo » pour YouTube. Si tu as déjà Rose, elle se met à jour toute seule.</li>
@@ -452,8 +453,8 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
     raf = requestAnimationFrame(sky);
     // texte du terminal
     var term = g.querySelector('.sx-term');
-    var TL = ['ROSE-OS v' + (window.ROSE_V || '2.3.4') + '  —  (c) 2026', '', 'Test mémoire ........ 640K OK', 'Chargement de ROSE .. OK',
-              'Canal ............... BÊTA SECRÈTE', 'Invitation .......... jeune rose ✓', 'Mise à jour ......... ' + (window.ROSE_V || '2.3.4'), '', '> acceder_a_la_beta'];
+    var TL = ['ROSE-OS v' + (window.ROSE_V || '2.3.5') + '  —  (c) 2026', '', 'Test mémoire ........ 640K OK', 'Chargement de ROSE .. OK',
+              'Canal ............... BÊTA SECRÈTE', 'Invitation .......... jeune rose ✓', 'Mise à jour ......... ' + (window.ROSE_V || '2.3.5'), '', '> acceder_a_la_beta'];
     var full = TL.join('\n'), n = 0, closed = false;
     var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'sx-enter da-keep'; btn.textContent = '[ ENTRER DANS LA BÊTA ]';
     var hint = document.createElement('span'); hint.className = 'sx-hint'; hint.textContent = 'clique sur le bouton  ▶';
