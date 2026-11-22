@@ -244,9 +244,9 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
 <span class="sx-tag">// Niveau d’accès : jeune rose</span>
 
 <h1 class="sx" data-text="Bienvenue sur la bêta">Bienvenue sur la bêta</h1>
-<p class="lead">… à vous, jeunes roses. Voici Rose <span class="rv">2.3.5</span> avant tout le monde : merci de me la faire essayer et de me dire ce qui coince.</p>
-<a class="btn" href="Rose-2.3.zip" download>Télécharger Rose <span class="rv">2.3.5</span> (zip, 57 Mo)</a> <a class="btn" href="Rose-2.3-notice.pdf" target="_blank" rel="noopener">La notice (PDF)</a>
-<p class="rv-badge">Version en ligne : <strong>Rose <span class="rv">2.3.5</span></strong> · si tu l’as déjà, elle se met à jour toute seule.</p>
+<p class="lead">… à vous, jeunes roses. Voici Rose <span class="rv">2.3.6</span> avant tout le monde : merci de me la faire essayer et de me dire ce qui coince.</p>
+<a class="btn" href="Rose-2.3.zip" download>Télécharger Rose <span class="rv">2.3.6</span> (zip, 57 Mo)</a> <a class="btn" href="Rose-2.3-notice.pdf" target="_blank" rel="noopener">La notice (PDF)</a>
+<p class="rv-badge">Version en ligne : <strong>Rose <span class="rv">2.3.6</span></strong> · si tu l’as déjà, elle se met à jour toute seule.</p>
 
 <section class="card"><h2>Installer</h2>
 <ol>
@@ -259,11 +259,9 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
 </section>
 
 <section class="card"><h2>Quoi de neuf</h2>
+<p><strong>Rose <span class="rv">2.3.6</span></strong> comprend les noms anglais de tes applis et de tes jeux (« like », « fort naïte » → Fortnite, « disque or » → Discord) et consomme moins de mémoire. Tout le détail, version par version :</p>
+<a class="btn" href="patch-notes.html">Lire les patch notes</a>
 <ul class="news">
-<li><strong>Nouveau en 2.3.5</strong> : le micro ne se bloque plus (Rose ne « décroche » plus), elle n'apprend plus de phrases toute seule sans te demander, « like » est mieux compris, et elle n'ouvre plus une appli au hasard sur un mot courant.</li>
-<li><strong>Nouveau en 2.3.4</strong> : Rose t'entend mieux (et baisse la musique quand tu l'appelles), « musique » met en pause ou relance, « musique suivante » et « like » marchent, « Rose, apprends » + une page des Réglages pour modifier ce qu'elle a appris, et elle retrouve tes applis et les icônes du bureau même avec un bout du nom.</li>
-<li><strong>Nouveau en 2.3.3</strong> : barre de son et cœur « liké » dans le petit lecteur, « arrête la musique » / « lance la musique » qui pilotent directement Spotify, et une grande bulle quand Rose a beaucoup à dire.</li>
-<li><strong>Nouveau en 2.3.2</strong> : elle réagit dès que tu dis « Rose » (même si tu parles vite), la musique se lance en fond sans afficher Spotify, « skip » marche, « Rose, apprends » pour lui apprendre tes mots, « proposition 2 » ne clique plus à côté, et « mets la vidéo en pause » / « relance la vidéo » pour YouTube. Si tu as déjà Rose, elle se met à jour toute seule.</li>
 <li><strong>Rosie sur Discord</strong> : tes amis peuvent t’envoyer un message ou lancer un jeu sur ton PC, seulement si tu acceptes.</li>
 <li><strong>Tes jeux Steam et Epic</strong> sont reconnus : « Rose, lance… ».</li>
 <li><strong>« Tu voulais dire… ? »</strong> quand elle comprend presque, et des questions oui / non plus fiables.</li>
@@ -286,8 +284,8 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
 
 <section class="card"><h2>Chut</h2>
 <p>Cette page <span class="redact" tabindex="0">n’existe pas</span>. Garde le lien pour toi, ne le partage <span class="redact" tabindex="0">surtout</span> pas encore. Un souci, une idée ? Dis-le-moi directement, <span class="redact" tabindex="0">en secret</span>.</p>
-<p class="sx-code">Transmission #2.3 · canal privé · <span class="redact" tabindex="0">archek</span></p>
-<p style="font-size:.85rem;word-break:break-all">Contrôle du fichier (SHA-256) : 71efe5ec51d5df5b6ea6b005e161ba13249aa0ec8375ec5449de57d9ba664971</p>
+<p class="sx-code">Transmission #2.3.6 · canal privé · <span class="redact" tabindex="0">archek</span></p>
+<p style="font-size:.85rem;word-break:break-all">Contrôle du fichier (SHA-256) : dce898c5cd7c7d4012a14c2b08276730cc96a75ae9657b8dc23bbf83cfd9c4f9</p>
 </section>
 </main>
 <script id="da-js">/* ===== DA Archek — fond étoilé, HUD, chargement, glitch ===== */
@@ -436,6 +434,7 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
   }
   // ---- intro : l'ordinateur ROSE-OS (comme sur mon site), à chaque visite ----
   (function(){
+    if (document.body.hasAttribute('data-nogate')) { scramble(); return; }   // page secondaire (patch notes) : pas d'intro
     var g = document.createElement('div'); g.id = 'sx-gate'; g.setAttribute('role', 'dialog'); g.setAttribute('aria-label', 'Accès à la bêta');
     g.innerHTML = '<canvas class="st"></canvas><div id="sx-pc"><div class="sx-mon"><div class="sx-bezel"><div class="sx-scr"><div class="sx-term"></div></div></div><span class="sx-led"></span></div><div class="sx-base"></div></div>'
       + '<div class="sx-under"><button type="button" class="sx-go2 da-keep">Entrer dans la bêta →</button><small>réservé aux jeunes roses</small></div>';
@@ -453,8 +452,8 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
     raf = requestAnimationFrame(sky);
     // texte du terminal
     var term = g.querySelector('.sx-term');
-    var TL = ['ROSE-OS v' + (window.ROSE_V || '2.3.5') + '  —  (c) 2026', '', 'Test mémoire ........ 640K OK', 'Chargement de ROSE .. OK',
-              'Canal ............... BÊTA SECRÈTE', 'Invitation .......... jeune rose ✓', 'Mise à jour ......... ' + (window.ROSE_V || '2.3.5'), '', '> acceder_a_la_beta'];
+    var TL = ['ROSE-OS v' + (window.ROSE_V || '2.3.6') + '  —  (c) 2026', '', 'Test mémoire ........ 640K OK', 'Chargement de ROSE .. OK',
+              'Canal ............... BÊTA SECRÈTE', 'Invitation .......... jeune rose ✓', 'Mise à jour ......... ' + (window.ROSE_V || '2.3.6'), '', '> acceder_a_la_beta'];
     var full = TL.join('\n'), n = 0, closed = false;
     var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'sx-enter da-keep'; btn.textContent = '[ ENTRER DANS LA BÊTA ]';
     var hint = document.createElement('span'); hint.className = 'sx-hint'; hint.textContent = 'clique sur le bouton  ▶';
