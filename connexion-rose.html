@@ -520,6 +520,60 @@ $("clearBtn").onclick=function(){if(!confirm("Supprimer toutes les captures ?"))
 sb.from("events").select("image_path").then(function(r){var p=(r.data||[]).map(function(x){return x.image_path}).filter(Boolean);
 return(p.length?sb.storage.from("captures").remove(p):Promise.resolve()).then(function(){return sb.from("events").delete().eq("user_id",uid)})}).then(function(){loadFeed();chatSoon()})};
 $("zoom").onclick=function(){$("zoom").classList.add("hide")};
+
+// ---------- controle du PC : ecran en direct + toucher = souris ----------
+(function(){
+document.body.appendChild($("ctl"));   // hors des cartes : plein ecran quoi qu'il arrive
+var on=false,rid=null,seq=-1,frameT=null,pingT=null,pad=false,zoom=1,cur={x:.5,y:.5},lastUrl=null,path=null;
+function rpc(k,x,y,d){if(!on||!rid)return;sb.rpc("rose_ctl_send",{p_rose:rid,p_kind:k,p_x:x==null?null:x,p_y:y==null?null:y,p_data:d==null?null:String(d)}).then(function(r){if(r.error)$("ctlState").textContent="Geste refusé : "+r.error.message})}
+function ping(){if(rid)sb.rpc("rose_live_ping",{p_rose:rid,p_on:on})}
+function frame(){if(!on)return;sb.from("rose_live").select("seq,private,frame_at").eq("rose_id",rid).maybeSingle().then(function(r){
+ var d=r.data;if(!on)return;
+ if(d&&d.frame_at&&Date.now()-new Date(d.frame_at).getTime()<6000){
+  if(d.private){$("ctlWait").textContent="Fenêtre privée devant (mot de passe, banque…) : l’image est masquée. Tes gestes marchent toujours.";$("ctlWait").classList.remove("hide");$("ctlState").textContent="Connecté · image masquée"}
+  else if(d.seq!==seq){seq=d.seq;sb.storage.from("captures").download(path).then(function(f){if(!on||!f.data)return;
+   var u=URL.createObjectURL(f.data);$("ctlImg").src=u;if(lastUrl)URL.revokeObjectURL(lastUrl);lastUrl=u;$("ctlWait").classList.add("hide");$("ctlState").textContent="Connecté · en direct"})}
+ }else{$("ctlState").textContent="En attente du PC…"}
+}).finally(function(){if(on)frameT=setTimeout(frame,700)})}
+function rel(ev){var b=$("ctlImg").getBoundingClientRect();if(!b.width)return null;
+ return{x:Math.min(1,Math.max(0,(ev.clientX-b.left)/b.width)),y:Math.min(1,Math.max(0,(ev.clientY-b.top)/b.height))}}
+function show(p){var c=$("ctlPing");c.style.left=(p.x*100)+"%";c.style.top=(p.y*100)+"%";c.classList.remove("go");void c.offsetWidth;c.classList.add("go")}
+function curShow(){var c=$("ctlCur");c.style.left=(cur.x*100)+"%";c.style.top=(cur.y*100)+"%"}
+// gestes : toucher, double toucher (300 ms), appui long (550 ms) ; en pave tactile, glisser bouge la souris
+var down=null,tapT=null,longT=null,moved=false,lastMove=0;
+var scr=$("ctlScr");
+scr.addEventListener("pointerdown",function(ev){if(!ev.isPrimary)return;var p=rel(ev);if(!p)return;down={x:ev.clientX,y:ev.clientY,p:p,cx:cur.x,cy:cur.y};moved=false;
+ clearTimeout(longT);longT=setTimeout(function(){if(down&&!moved){var q=pad?{x:cur.x,y:cur.y}:down.p;rpc("rclick",q.x,q.y);show(q);down=null;if(navigator.vibrate)navigator.vibrate(30)}},550)});
+scr.addEventListener("pointermove",function(ev){if(!down||!ev.isPrimary)return;var dx=ev.clientX-down.x,dy=ev.clientY-down.y;
+ if(Math.abs(dx)+Math.abs(dy)>10)moved=true;
+ if(pad&&moved){var b=$("ctlImg").getBoundingClientRect();cur.x=Math.min(1,Math.max(0,down.cx+dx/b.width*1.6));cur.y=Math.min(1,Math.max(0,down.cy+dy/b.height*1.6));curShow();
+  var t=Date.now();if(t-lastMove>140){lastMove=t;rpc("move",cur.x,cur.y)}}});
+scr.addEventListener("pointerup",function(ev){if(!down||!ev.isPrimary)return;clearTimeout(longT);var d=down;down=null;
+ if(pad&&moved){rpc("move",cur.x,cur.y);return}
+ if(moved)return;                                   // c'etait un defilement de l'image zoomee
+ var q=pad?{x:cur.x,y:cur.y}:d.p;
+ if(tapT){clearTimeout(tapT);tapT=null;rpc("dclick",q.x,q.y);show(q);return}
+ tapT=setTimeout(function(){tapT=null;rpc("click",q.x,q.y);show(q)},300)});
+scr.addEventListener("pointercancel",function(){clearTimeout(longT);down=null});
+scr.addEventListener("contextmenu",function(ev){ev.preventDefault()});
+[].forEach.call(document.querySelectorAll(".ctl-keys button"),function(b){b.onclick=function(){rpc(b.dataset.k,null,null,b.dataset.d)}});
+$("ctlType").onsubmit=function(ev){ev.preventDefault();var t=$("ctlTxt").value;if(t){rpc("text",null,null,t);$("ctlTxt").value=""}};
+$("ctlMode").onclick=function(){pad=!pad;$("ctl").classList.toggle("pad",pad);$("ctlCur").classList.toggle("hide",!pad);curShow();
+ $("ctlMode").textContent=pad?"Toucher direct":"Pavé tactile";
+ $("ctlHelp").textContent=pad?"Glisse = bouger la souris · touche = clic · 2 touches = double-clic · appui long = clic droit":"Touche = clic · 2 touches rapides = double-clic · appui long = clic droit"};
+$("ctlZoom").onclick=function(){zoom=zoom>=3?1:zoom+1;$("ctlIn").style.width=(zoom*100)+"%";$("ctlZoom").textContent="Zoom ×"+zoom};
+$("ctlGrid").onclick=function(){$("ctlGridL").classList.toggle("hide")};
+function close(){if(!on)return;on=false;ping();clearTimeout(frameT);clearInterval(pingT);$("ctl").classList.add("hide");document.body.style.overflow="";
+ if(lastUrl){URL.revokeObjectURL(lastUrl);lastUrl=null}$("ctlImg").removeAttribute("src")}
+$("ctlClose").onclick=close;
+window.addEventListener("pagehide",close);
+$("ctlOpen").onclick=function(){rid=$("target").value;var x=roses.filter(function(y){return y.id===rid})[0];
+ if(!rid||!x){say("ctlMsg","Lie d’abord un PC à ton compte.","err");return}
+ if(!(x.last_poll&&Date.now()-new Date(x.last_poll).getTime()<12e4)){say("ctlMsg","Rose est éteinte sur ce PC : allume-la d’abord.","err");return}
+ say("ctlMsg","","");on=true;seq=-1;path=uid+"/"+rid+"/live.jpg";$("ctlWait").textContent="Rose prépare l’écran… (jusqu’à 5 s)";$("ctlWait").classList.remove("hide");
+ $("ctlState").textContent="Connexion au PC…";$("ctl").classList.remove("hide");document.body.style.overflow="hidden";
+ ping();pingT=setInterval(ping,20000);frame()};
+})();
 }
 </script>
 <script id="da-js">/* ===== DA Archek — fond étoilé, HUD, chargement, glitch ===== */
@@ -651,58 +705,5 @@ $("zoom").onclick=function(){$("zoom").classList.add("hide")};
   addEventListener('pageshow', function () { fade.style.opacity = 0; });
 })();
 
-// ---------- controle du PC : ecran en direct + toucher = souris ----------
-(function(){
-document.body.appendChild($("ctl"));   // hors des cartes : plein ecran quoi qu'il arrive
-var on=false,rid=null,seq=-1,frameT=null,pingT=null,pad=false,zoom=1,cur={x:.5,y:.5},lastUrl=null,path=null;
-function rpc(k,x,y,d){if(!on||!rid)return;sb.rpc("rose_ctl_send",{p_rose:rid,p_kind:k,p_x:x==null?null:x,p_y:y==null?null:y,p_data:d==null?null:String(d)}).then(function(r){if(r.error)$("ctlState").textContent="Geste refusé : "+r.error.message})}
-function ping(){if(rid)sb.rpc("rose_live_ping",{p_rose:rid,p_on:on})}
-function frame(){if(!on)return;sb.from("rose_live").select("seq,private,frame_at").eq("rose_id",rid).maybeSingle().then(function(r){
- var d=r.data;if(!on)return;
- if(d&&d.frame_at&&Date.now()-new Date(d.frame_at).getTime()<6000){
-  if(d.private){$("ctlWait").textContent="Fenêtre privée devant (mot de passe, banque…) : l’image est masquée. Tes gestes marchent toujours.";$("ctlWait").classList.remove("hide");$("ctlState").textContent="Connecté · image masquée"}
-  else if(d.seq!==seq){seq=d.seq;sb.storage.from("captures").download(path).then(function(f){if(!on||!f.data)return;
-   var u=URL.createObjectURL(f.data);$("ctlImg").src=u;if(lastUrl)URL.revokeObjectURL(lastUrl);lastUrl=u;$("ctlWait").classList.add("hide");$("ctlState").textContent="Connecté · en direct"})}
- }else{$("ctlState").textContent="En attente du PC…"}
-}).finally(function(){if(on)frameT=setTimeout(frame,700)})}
-function rel(ev){var b=$("ctlImg").getBoundingClientRect();if(!b.width)return null;
- return{x:Math.min(1,Math.max(0,(ev.clientX-b.left)/b.width)),y:Math.min(1,Math.max(0,(ev.clientY-b.top)/b.height))}}
-function show(p){var c=$("ctlPing");c.style.left=(p.x*100)+"%";c.style.top=(p.y*100)+"%";c.classList.remove("go");void c.offsetWidth;c.classList.add("go")}
-function curShow(){var c=$("ctlCur");c.style.left=(cur.x*100)+"%";c.style.top=(cur.y*100)+"%"}
-// gestes : toucher, double toucher (300 ms), appui long (550 ms) ; en pave tactile, glisser bouge la souris
-var down=null,tapT=null,longT=null,moved=false,lastMove=0;
-var scr=$("ctlScr");
-scr.addEventListener("pointerdown",function(ev){if(!ev.isPrimary)return;var p=rel(ev);if(!p)return;down={x:ev.clientX,y:ev.clientY,p:p,cx:cur.x,cy:cur.y};moved=false;
- clearTimeout(longT);longT=setTimeout(function(){if(down&&!moved){var q=pad?{x:cur.x,y:cur.y}:down.p;rpc("rclick",q.x,q.y);show(q);down=null;if(navigator.vibrate)navigator.vibrate(30)}},550)});
-scr.addEventListener("pointermove",function(ev){if(!down||!ev.isPrimary)return;var dx=ev.clientX-down.x,dy=ev.clientY-down.y;
- if(Math.abs(dx)+Math.abs(dy)>10)moved=true;
- if(pad&&moved){var b=$("ctlImg").getBoundingClientRect();cur.x=Math.min(1,Math.max(0,down.cx+dx/b.width*1.6));cur.y=Math.min(1,Math.max(0,down.cy+dy/b.height*1.6));curShow();
-  var t=Date.now();if(t-lastMove>140){lastMove=t;rpc("move",cur.x,cur.y)}}});
-scr.addEventListener("pointerup",function(ev){if(!down||!ev.isPrimary)return;clearTimeout(longT);var d=down;down=null;
- if(pad&&moved){rpc("move",cur.x,cur.y);return}
- if(moved)return;                                   // c'etait un defilement de l'image zoomee
- var q=pad?{x:cur.x,y:cur.y}:d.p;
- if(tapT){clearTimeout(tapT);tapT=null;rpc("dclick",q.x,q.y);show(q);return}
- tapT=setTimeout(function(){tapT=null;rpc("click",q.x,q.y);show(q)},300)});
-scr.addEventListener("pointercancel",function(){clearTimeout(longT);down=null});
-scr.addEventListener("contextmenu",function(ev){ev.preventDefault()});
-[].forEach.call(document.querySelectorAll(".ctl-keys button"),function(b){b.onclick=function(){rpc(b.dataset.k,null,null,b.dataset.d)}});
-$("ctlType").onsubmit=function(ev){ev.preventDefault();var t=$("ctlTxt").value;if(t){rpc("text",null,null,t);$("ctlTxt").value=""}};
-$("ctlMode").onclick=function(){pad=!pad;$("ctl").classList.toggle("pad",pad);$("ctlCur").classList.toggle("hide",!pad);curShow();
- $("ctlMode").textContent=pad?"Toucher direct":"Pavé tactile";
- $("ctlHelp").textContent=pad?"Glisse = bouger la souris · touche = clic · 2 touches = double-clic · appui long = clic droit":"Touche = clic · 2 touches rapides = double-clic · appui long = clic droit"};
-$("ctlZoom").onclick=function(){zoom=zoom>=3?1:zoom+1;$("ctlIn").style.width=(zoom*100)+"%";$("ctlZoom").textContent="Zoom ×"+zoom};
-$("ctlGrid").onclick=function(){$("ctlGridL").classList.toggle("hide")};
-function close(){if(!on)return;on=false;ping();clearTimeout(frameT);clearInterval(pingT);$("ctl").classList.add("hide");document.body.style.overflow="";
- if(lastUrl){URL.revokeObjectURL(lastUrl);lastUrl=null}$("ctlImg").removeAttribute("src")}
-$("ctlClose").onclick=close;
-window.addEventListener("pagehide",close);
-$("ctlOpen").onclick=function(){rid=$("target").value;var x=roses.filter(function(y){return y.id===rid})[0];
- if(!rid||!x){say("ctlMsg","Lie d’abord un PC à ton compte.","err");return}
- if(!alive(x)){say("ctlMsg","Rose est éteinte sur ce PC : allume-la d’abord.","err");return}
- say("ctlMsg","","");on=true;seq=-1;path=uid+"/"+rid+"/live.jpg";$("ctlWait").textContent="Rose prépare l’écran… (jusqu’à 5 s)";$("ctlWait").classList.remove("hide");
- $("ctlState").textContent="Connexion au PC…";$("ctl").classList.remove("hide");document.body.style.overflow="hidden";
- ping();pingT=setInterval(ping,20000);frame()};
-})();
 </script></body>
 </html>
