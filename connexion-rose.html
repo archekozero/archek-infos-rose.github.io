@@ -301,7 +301,7 @@ function fmt(t){var d=new Date(t),n=new Date();return d.toDateString()===n.toDat
 // texte renvoye par Rose : "✓ ordre — reponse (capture masquee : fenetre privee)"
 // liste des vocaux : "Choisis un vocal~\n§VOCAUX\nid<TAB>salon<TAB>serveur<TAB>membres\n..."
 function parts(t){var ok=null,m=false,vc=null;t=t||"";var k=t.indexOf("§VOCAUX\n");
-if(k>=0){vc=t.slice(k+8).split("\n").map(function(l){var f=l.split("\t");return{id:f[0],name:f[1],guild:f[2],members:f[3]||""}}).filter(function(r){return/^\d{15,}$/.test(r.id)&&r.name});t=t.slice(0,k).trim()}
+if(k>=0){t=t.slice(0,k).trim()}   /* appels Discord retires : la liste des vocaux n'est plus proposee */
 if(t.indexOf("✓ ")===0){ok=true;t=t.slice(2)}else if(t.indexOf("✗ ")===0){ok=false;t=t.slice(2)}
 var re=/\s*\(capture masqu[eé]e : fen[eê]tre priv[eé]e\)/;if(re.test(t)){m=true;t=t.replace(re,"")}t=t.charAt(0).toUpperCase()+t.slice(1);return{ok:ok,t:t,masked:m,vc:vc}}
 // les salons, groupes par serveur ; un clic demande a Rose d'y aller
