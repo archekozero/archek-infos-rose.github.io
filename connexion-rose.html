@@ -41,6 +41,21 @@ code{font-size:.9em}
 .card{position:relative;background:linear-gradient(160deg,var(--glass2),var(--glass) 45%);border:1px solid var(--edge);border-radius:22px;padding:1.1rem 1rem 1.15rem;margin:1.25rem 0;
 -webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 20px 40px -20px rgba(0,0,0,.8)}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.card,.bubble{background:rgba(18,10,30,.96)}}
+.ctl{position:fixed;inset:0;z-index:2147483000;background:#07040d;display:flex;flex-direction:column;gap:.4rem;padding:.5rem;overflow:hidden}
+.ctl-top{display:flex;gap:.35rem;align-items:center;flex-wrap:wrap}.ctl-top span{flex:1;font-size:.85rem;color:var(--soft);min-width:8rem}
+.ctl-top button,.ctl-keys button{margin:0;padding:.35rem .6rem;font-size:.82rem}
+.ctl-scr{flex:1;min-height:0;overflow:auto;position:relative;border:1px solid var(--edge);border-radius:10px;background:#000;touch-action:pan-x pan-y}
+.ctl-in{position:relative;width:100%;line-height:0}.ctl-in img{width:100%;height:auto;display:block;user-select:none;-webkit-user-drag:none}
+.ctl.pad .ctl-scr{touch-action:none}
+.ctl-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(240,138,184,.35) 1px,transparent 1px),linear-gradient(90deg,rgba(240,138,184,.35) 1px,transparent 1px);background-size:10% 10%}
+.ctl-cur{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border:2px solid #fff;border-radius:50%;background:var(--pink);box-shadow:0 0 8px var(--pink);pointer-events:none}
+.ctl-ping{position:absolute;width:34px;height:34px;margin:-17px 0 0 -17px;border:3px solid var(--pink);border-radius:50%;opacity:0;pointer-events:none}
+.ctl-ping.go{animation:ctlp .5s ease-out}@keyframes ctlp{from{opacity:1;transform:scale(.4)}to{opacity:0;transform:scale(1.4)}}
+.ctl-wait{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--soft);margin:0;padding:1rem;line-height:1.4}
+.ctl-help{font-size:.78rem;color:var(--soft);text-align:center}
+.ctl-keys{display:flex;gap:.3rem;overflow-x:auto;padding-bottom:.2rem}.ctl-keys button{flex:none}
+.ctl .send{margin:0}
+@media (orientation:landscape){.ctl-rot{display:none}}
 .soft{color:var(--soft)}.small{font-size:.88rem}.hide{display:none!important}
 label{display:block;font-weight:600;font-size:.92rem;margin:.8rem 0 .3rem}
 input,select{width:100%;font:inherit;color:var(--ink);background:rgba(10,4,20,.45);border:1px solid var(--edge);border-radius:14px;padding:.65rem .85rem;transition:border-color .15s}
@@ -264,6 +279,26 @@ hr{border-color:var(--line)}
 </div></div>
 <form id="sendForm" class="send"><input id="msg" maxlength="500" autocomplete="off" placeholder="Écris à Rose…" aria-label="Message pour Rose"><button id="sendBtn" type="submit">Envoyer</button></form>
 <p id="tmsg" class="msg" role="status"></p></section>
+
+<section class="card" id="ctlCard"><h2>Contrôler le PC</h2>
+<p class="soft">L’écran de ton PC en direct sur ton téléphone. <strong>Toucher direct</strong> : Rose clique là où tu touches l’image. <strong>Pavé tactile</strong> : ton écran devient une souris.</p>
+<button id="ctlOpen" type="button">Prendre le contrôle</button><p id="ctlMsg" class="msg" role="status"></p></section>
+
+<div id="ctl" class="ctl hide" role="dialog" aria-label="Contrôle du PC">
+<div class="ctl-top"><span id="ctlState">Connexion au PC…</span>
+<button type="button" id="ctlMode">Pavé tactile</button><button type="button" id="ctlZoom">Zoom ×1</button><button type="button" id="ctlGrid">Grille</button><button type="button" id="ctlClose" class="bad">Quitter</button></div>
+<div class="ctl-scr" id="ctlScr"><div class="ctl-in" id="ctlIn"><img id="ctlImg" alt="Écran du PC en direct"><div class="ctl-grid hide" id="ctlGridL"></div><span class="ctl-cur hide" id="ctlCur"></span><span class="ctl-ping" id="ctlPing"></span></div><p class="ctl-wait" id="ctlWait">Rose prépare l’écran… (jusqu’à 5 s)</p></div>
+<div class="ctl-help" id="ctlHelp">Touche = clic · 2 touches rapides = double-clic · appui long = clic droit</div>
+<div class="ctl-help ctl-rot">Astuce : tourne ton téléphone pour voir l’écran en grand.</div>
+<div class="ctl-keys">
+<button type="button" data-k="scroll" data-d="3">▲ Défiler</button><button type="button" data-k="scroll" data-d="-3">▼ Défiler</button>
+<button type="button" data-k="key" data-d="enter">Entrée</button><button type="button" data-k="key" data-d="back">⌫</button><button type="button" data-k="key" data-d="esc">Échap</button>
+<button type="button" data-k="key" data-d="tab">Tab</button><button type="button" data-k="key" data-d="alttab">Alt+Tab</button><button type="button" data-k="key" data-d="desktop">Bureau</button>
+<button type="button" data-k="key" data-d="win">Démarrer</button><button type="button" data-k="key" data-d="closetab">Fermer l’onglet</button><button type="button" data-k="key" data-d="f5">Actualiser</button>
+<button type="button" data-k="key" data-d="copy">Copier</button><button type="button" data-k="key" data-d="paste">Coller</button>
+</div>
+<form id="ctlType" class="send"><input id="ctlTxt" maxlength="200" autocomplete="off" placeholder="Taper sur le PC…" aria-label="Texte à taper sur le PC"><button type="submit">Taper</button></form>
+</div>
 
 <section class="card" id="dcCard"><h2>Rosie sur Discord</h2>
 <div class="row"><div><strong id="dcState">Rosie Discord : éteinte</strong><div class="soft small">Éteinte, personne ne peut rien demander à ta Rose depuis Discord.</div></div>
@@ -614,6 +649,60 @@ $("zoom").onclick=function(){$("zoom").classList.add("hide")};
     setTimeout(function () { location.href = url.href; }, 300);
   });
   addEventListener('pageshow', function () { fade.style.opacity = 0; });
+})();
+
+// ---------- controle du PC : ecran en direct + toucher = souris ----------
+(function(){
+document.body.appendChild($("ctl"));   // hors des cartes : plein ecran quoi qu'il arrive
+var on=false,rid=null,seq=-1,frameT=null,pingT=null,pad=false,zoom=1,cur={x:.5,y:.5},lastUrl=null,path=null;
+function rpc(k,x,y,d){if(!on||!rid)return;sb.rpc("rose_ctl_send",{p_rose:rid,p_kind:k,p_x:x==null?null:x,p_y:y==null?null:y,p_data:d==null?null:String(d)}).then(function(r){if(r.error)$("ctlState").textContent="Geste refusé : "+r.error.message})}
+function ping(){if(rid)sb.rpc("rose_live_ping",{p_rose:rid,p_on:on})}
+function frame(){if(!on)return;sb.from("rose_live").select("seq,private,frame_at").eq("rose_id",rid).maybeSingle().then(function(r){
+ var d=r.data;if(!on)return;
+ if(d&&d.frame_at&&Date.now()-new Date(d.frame_at).getTime()<6000){
+  if(d.private){$("ctlWait").textContent="Fenêtre privée devant (mot de passe, banque…) : l’image est masquée. Tes gestes marchent toujours.";$("ctlWait").classList.remove("hide");$("ctlState").textContent="Connecté · image masquée"}
+  else if(d.seq!==seq){seq=d.seq;sb.storage.from("captures").download(path).then(function(f){if(!on||!f.data)return;
+   var u=URL.createObjectURL(f.data);$("ctlImg").src=u;if(lastUrl)URL.revokeObjectURL(lastUrl);lastUrl=u;$("ctlWait").classList.add("hide");$("ctlState").textContent="Connecté · en direct"})}
+ }else{$("ctlState").textContent="En attente du PC…"}
+}).finally(function(){if(on)frameT=setTimeout(frame,700)})}
+function rel(ev){var b=$("ctlImg").getBoundingClientRect();if(!b.width)return null;
+ return{x:Math.min(1,Math.max(0,(ev.clientX-b.left)/b.width)),y:Math.min(1,Math.max(0,(ev.clientY-b.top)/b.height))}}
+function show(p){var c=$("ctlPing");c.style.left=(p.x*100)+"%";c.style.top=(p.y*100)+"%";c.classList.remove("go");void c.offsetWidth;c.classList.add("go")}
+function curShow(){var c=$("ctlCur");c.style.left=(cur.x*100)+"%";c.style.top=(cur.y*100)+"%"}
+// gestes : toucher, double toucher (300 ms), appui long (550 ms) ; en pave tactile, glisser bouge la souris
+var down=null,tapT=null,longT=null,moved=false,lastMove=0;
+var scr=$("ctlScr");
+scr.addEventListener("pointerdown",function(ev){if(!ev.isPrimary)return;var p=rel(ev);if(!p)return;down={x:ev.clientX,y:ev.clientY,p:p,cx:cur.x,cy:cur.y};moved=false;
+ clearTimeout(longT);longT=setTimeout(function(){if(down&&!moved){var q=pad?{x:cur.x,y:cur.y}:down.p;rpc("rclick",q.x,q.y);show(q);down=null;if(navigator.vibrate)navigator.vibrate(30)}},550)});
+scr.addEventListener("pointermove",function(ev){if(!down||!ev.isPrimary)return;var dx=ev.clientX-down.x,dy=ev.clientY-down.y;
+ if(Math.abs(dx)+Math.abs(dy)>10)moved=true;
+ if(pad&&moved){var b=$("ctlImg").getBoundingClientRect();cur.x=Math.min(1,Math.max(0,down.cx+dx/b.width*1.6));cur.y=Math.min(1,Math.max(0,down.cy+dy/b.height*1.6));curShow();
+  var t=Date.now();if(t-lastMove>140){lastMove=t;rpc("move",cur.x,cur.y)}}});
+scr.addEventListener("pointerup",function(ev){if(!down||!ev.isPrimary)return;clearTimeout(longT);var d=down;down=null;
+ if(pad&&moved){rpc("move",cur.x,cur.y);return}
+ if(moved)return;                                   // c'etait un defilement de l'image zoomee
+ var q=pad?{x:cur.x,y:cur.y}:d.p;
+ if(tapT){clearTimeout(tapT);tapT=null;rpc("dclick",q.x,q.y);show(q);return}
+ tapT=setTimeout(function(){tapT=null;rpc("click",q.x,q.y);show(q)},300)});
+scr.addEventListener("pointercancel",function(){clearTimeout(longT);down=null});
+scr.addEventListener("contextmenu",function(ev){ev.preventDefault()});
+[].forEach.call(document.querySelectorAll(".ctl-keys button"),function(b){b.onclick=function(){rpc(b.dataset.k,null,null,b.dataset.d)}});
+$("ctlType").onsubmit=function(ev){ev.preventDefault();var t=$("ctlTxt").value;if(t){rpc("text",null,null,t);$("ctlTxt").value=""}};
+$("ctlMode").onclick=function(){pad=!pad;$("ctl").classList.toggle("pad",pad);$("ctlCur").classList.toggle("hide",!pad);curShow();
+ $("ctlMode").textContent=pad?"Toucher direct":"Pavé tactile";
+ $("ctlHelp").textContent=pad?"Glisse = bouger la souris · touche = clic · 2 touches = double-clic · appui long = clic droit":"Touche = clic · 2 touches rapides = double-clic · appui long = clic droit"};
+$("ctlZoom").onclick=function(){zoom=zoom>=3?1:zoom+1;$("ctlIn").style.width=(zoom*100)+"%";$("ctlZoom").textContent="Zoom ×"+zoom};
+$("ctlGrid").onclick=function(){$("ctlGridL").classList.toggle("hide")};
+function close(){if(!on)return;on=false;ping();clearTimeout(frameT);clearInterval(pingT);$("ctl").classList.add("hide");document.body.style.overflow="";
+ if(lastUrl){URL.revokeObjectURL(lastUrl);lastUrl=null}$("ctlImg").removeAttribute("src")}
+$("ctlClose").onclick=close;
+window.addEventListener("pagehide",close);
+$("ctlOpen").onclick=function(){rid=$("target").value;var x=roses.filter(function(y){return y.id===rid})[0];
+ if(!rid||!x){say("ctlMsg","Lie d’abord un PC à ton compte.","err");return}
+ if(!alive(x)){say("ctlMsg","Rose est éteinte sur ce PC : allume-la d’abord.","err");return}
+ say("ctlMsg","","");on=true;seq=-1;path=uid+"/"+rid+"/live.jpg";$("ctlWait").textContent="Rose prépare l’écran… (jusqu’à 5 s)";$("ctlWait").classList.remove("hide");
+ $("ctlState").textContent="Connexion au PC…";$("ctl").classList.remove("hide");document.body.style.overflow="hidden";
+ ping();pingT=setInterval(ping,20000);frame()};
 })();
 </script></body>
 </html>
