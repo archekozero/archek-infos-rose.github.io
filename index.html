@@ -61,6 +61,20 @@ li.it span.d{color:var(--soft);font-size:.92rem}
 .links a{padding:.32rem .8rem;border-radius:999px;background:var(--glass);border:1px solid var(--edge);color:var(--ink);text-decoration:none;font-size:.9rem;font-weight:600}
 .links a:hover{border-color:var(--pink)}
 footer{margin-top:2rem}
+.nt-p{color:var(--soft);margin:.2rem 0 .9rem}
+.nt-btn{display:inline-block;padding:.7rem 1.1rem;border:1px solid var(--pink);border-radius:12px;color:var(--ink);text-decoration:none;background:rgba(240,138,184,.12)}
+.nt-btn:hover,.nt-btn:focus-visible{background:rgba(240,138,184,.28);outline:none}
+.fr-wrap{overflow-x:auto;scroll-snap-type:x proximity;padding:0 0 .8rem;outline:none}
+.fr-wrap:focus-visible{box-shadow:0 0 0 2px var(--pink);border-radius:8px}
+.fr{display:flex;gap:0;position:relative;padding-top:2.4rem;min-width:max-content}
+.fr::before{content:"";position:absolute;left:0;right:0;top:2.95rem;height:2px;background:linear-gradient(90deg,var(--orange),var(--pink))}
+.fr-d{scroll-snap-align:start;width:250px;flex:0 0 250px;padding:0 .9rem 0 0;position:relative}
+.fr-dot{position:absolute;top:.15rem;left:0;width:14px;height:14px;background:var(--night);border:3px solid var(--pink);border-radius:2px}
+.fr-d.last .fr-dot{background:var(--pink);box-shadow:0 0 12px var(--pink)}
+.fr-t{position:absolute;top:-2.2rem;left:0;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--orange)}
+.fr-n{position:absolute;top:-1.1rem;left:0;font-size:11px;color:var(--soft)}
+.fr-d ul{list-style:none;margin:1.6rem 0 0;padding:0}
+.fr-d li{font-size:12.5px;line-height:1.45;color:var(--ink);padding:.45rem .55rem;margin:0 0 .45rem;border-left:2px solid rgba(240,138,184,.5);background:rgba(255,255,255,.03)}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;600&family=Pixelify+Sans:wght@500;700&display=swap"><style id="da-css">/* ===== DA Archek — couche commune (fond étoilé, typo, glitch) ===== */
 :root{
@@ -181,6 +195,14 @@ hr{border-color:var(--line)}
 <section class="card"><h2>Ses connexions</h2>
 <ul id="conns"></ul></section>
 
+<section class="card"><h2>La notice</h2>
+<p class="nt-p">Toutes les commandes de Rose, comment activer chaque option et quoi faire si quelque chose ne marche pas. À jour pour Rose <strong>2.3.12</strong>.</p>
+<a class="nt-btn" href="Rose-notice.pdf" target="_blank" rel="noopener">Lire la notice (PDF, 12 pages)</a></section>
+
+<section class="card"><h2>Frise de l’avancement</h2>
+<p class="nt-p">Chaque point est une journée de travail. La frise s’ouvre sur le plus récent : fais-la défiler vers la gauche pour remonter jusqu’au début.</p>
+<div class="fr-wrap" id="frise" tabindex="0" aria-label="Frise chronologique de l’avancement de Rose"></div></section>
+
 <section class="card"><h2>Journal</h2>
 <ul id="log" class="log"></ul></section>
 
@@ -248,6 +270,9 @@ var LOG=[
  {t:"2026-11-20",x:"Nouveau : la musique se lance en fond sans afficher Spotify (seul « ouvre Spotify » l’affiche), « skip », contrôle des vidéos YouTube, et « Rose, apprends » pour lui apprendre un mot."},
  {t:"2026-11-20",x:"Rose 2.3.3 : barre de son et cœur liké dans le petit lecteur, « arrête la musique » qui marche, grande bulle quand elle a beaucoup à dire. Réglages : 4 pages au lieu de 3."},
  {t:"2026-11-21",x:"Rose 2.3.4. Corrigé : des commandes perdues quand elle était occupée, « musique suivantes » (Vosk ajoutait un s), Rose qui pouvait s’ouvrir elle-même, la musique qui se relançait et s’arrêtait toute seule."},
+ {t:"2026-11-22",x:"Rose 2.3.8 et 2.3.9 : elle demande avant de se mettre à jour (elle ouvre les patch notes puis attend ton « oui »), ne bloque plus Spotify quand tu cliques dessus, et remet la musique au bon volume même si elle a été fermée pendant qu’elle t’écoutait."},
+ {t:"2026-11-24",x:"Rose 2.3.10 et 2.3.11 : « Rose » reconnu même quand une vidéo parle en même temps, « crème » compris comme Chrome, et « oui » / « non » ne sont plus jamais appris comme des ordres."},
+ {t:"2026-11-25",x:"Rose 2.3.12 : une oreille dédiée au mot « Rose » (aussi « hey Rose », « ok Rose »), le volume du micro réglé tout seul (plus de voix saturée), son étoile qui grossit quand elle t’entend même en mode silencieux, « Rose, teste le micro », le petit modèle de voix quand le PC manque de mémoire, et « suivant » qui ne fait plus apparaître Spotify."},
  {t:"2026-11-22",x:"Rose 2.3.6 et 2.3.7 : elle comprend les noms anglais des applis et des jeux, consomme moins de mémoire, et ne rejoint plus les salons vocaux Discord (option retirée)."},
  {t:"2026-11-21",x:"Rose 2.3.5. Corrigé : le micro qui pouvait se bloquer (Rose ne m’entendait plus), l’apprentissage automatique qui retenait des phrases mal entendues (elle demande toujours avant), une appli ouverte par erreur sur un mot courant, « like » mal compris."},
  {t:"2026-11-21",x:"Nouveau : « musique » met en pause ou relance, « like » et « retire le like », la musique baisse quand on l’appelle, applis et icônes du bureau trouvées avec un bout du nom, page des Réglages « Ce que Rose a appris » (modifier, supprimer, ajouter), étoile multicolore quand elle apprend."}
@@ -259,6 +284,13 @@ document.getElementById("conns").innerHTML=CONNS.map(item).join("");
 document.getElementById("log").innerHTML=LOG.slice().reverse().map(function(e){
  var d=new Date(e.t+"T12:00:00");
  return '<li><time datetime="'+e.t+'">'+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"})+'</time>'+e.x+'</li>'}).join("");
+(function(){var by={};LOG.forEach(function(e){(by[e.t]=by[e.t]||[]).push(e.x)});
+ var ds=Object.keys(by).sort(),f=document.getElementById("frise");if(!f)return;
+ f.innerHTML='<div class="fr">'+ds.map(function(t,i){var d=new Date(t+"T12:00:00");
+  return '<div class="fr-d'+(i===ds.length-1?' last':'')+'"><span class="fr-t">'+d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+'</span>'+
+   '<span class="fr-n">'+by[t].length+(by[t].length>1?' étapes':' étape')+'</span><span class="fr-dot"></span><ul>'+
+   by[t].map(function(x){return '<li>'+x+'</li>'}).join("")+'</ul></div>'}).join("")+'</div>';
+ f.scrollLeft=f.scrollWidth;})();
 var all=CAPS.concat(CONNS),pts=all.reduce(function(a,o){return a+(o.s==="actif"?1:o.s==="wip"?.5:0)},0);
 var p=Math.round(100*pts/all.length);
 document.getElementById("pct").textContent=p+" %";
