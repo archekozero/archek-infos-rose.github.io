@@ -527,13 +527,18 @@ document.body.appendChild($("ctl"));   // hors des cartes : plein ecran quoi qu'
 var on=false,rid=null,seq=-1,frameT=null,pingT=null,pad=false,zoom=1,cur={x:.5,y:.5},lastUrl=null,path=null;
 function rpc(k,x,y,d){if(!on||!rid)return;sb.rpc("rose_ctl_send",{p_rose:rid,p_kind:k,p_x:x==null?null:x,p_y:y==null?null:y,p_data:d==null?null:String(d)}).then(function(r){if(r.error)$("ctlState").textContent="Geste refusé : "+r.error.message})}
 function ping(){if(rid)sb.rpc("rose_live_ping",{p_rose:rid,p_on:on}).then(function(r){if(r.error)$("ctlState").textContent="Contrôle refusé : "+r.error.message})}   // .then : sinon la requete ne part pas
+var seenAt=0,lastSeq=-1;
 function frame(){if(!on)return;var t0=Date.now();sb.rpc("rose_live_get",{p_rose:rid,p_seq:seq}).then(function(r){
- var d=r.data;if(!on)return;
- if(d&&d.frame_at&&Date.now()-new Date(d.frame_at).getTime()<6000){
+ if(!on)return;
+ if(r.error){$("ctlState").textContent="Erreur : "+r.error.message;return}
+ var d=r.data;if(typeof d==="string"){try{d=JSON.parse(d)}catch(e){d=null}}
+ if(d&&d.seq!==lastSeq){lastSeq=d.seq;seenAt=Date.now()}            // l'horloge du telephone peut etre decalee : on se fie au compteur d'images
+ if(d&&seenAt&&Date.now()-seenAt<6000){
   if(d.private){$("ctlWait").textContent="Fenêtre privée devant (mot de passe, banque…) : l’image est masquée. Tes gestes marchent toujours.";$("ctlWait").classList.remove("hide");$("ctlState").textContent="Connecté · image masquée"}
-  else if(d.img&&d.seq!==seq){seq=d.seq;var im=new Image();im.onload=function(){if(!on)return;$("ctlImg").src=im.src;$("ctlWait").classList.add("hide");$("ctlState").textContent="Connecté · en direct"};im.src="data:image/jpeg;base64,"+d.img}
+  else if(d.img&&d.seq!==seq){seq=d.seq;var im=new Image();im.onload=function(){if(!on)return;$("ctlImg").src=im.src;$("ctlWait").classList.add("hide");$("ctlState").textContent="Connecté · en direct"};
+   im.onerror=function(){$("ctlState").textContent="Image illisible, j'attends la suivante…"};im.src="data:image/jpeg;base64,"+d.img}
  }else{$("ctlState").textContent="En attente du PC…"}
-}).finally(function(){if(on)frameT=setTimeout(frame,Math.max(80,300-(Date.now()-t0)))})}
+}).catch(function(e){$("ctlState").textContent="Erreur réseau, je réessaie…"}).finally(function(){if(on)frameT=setTimeout(frame,Math.max(80,300-(Date.now()-t0)))})}
 function rel(ev){var b=$("ctlImg").getBoundingClientRect();if(!b.width)return null;
  return{x:Math.min(1,Math.max(0,(ev.clientX-b.left)/b.width)),y:Math.min(1,Math.max(0,(ev.clientY-b.top)/b.height))}}
 function show(p){var c=$("ctlPing");c.style.left=(p.x*100)+"%";c.style.top=(p.y*100)+"%";c.classList.remove("go");void c.offsetWidth;c.classList.add("go")}
