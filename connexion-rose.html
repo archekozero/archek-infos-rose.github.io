@@ -526,7 +526,7 @@ $("zoom").onclick=function(){$("zoom").classList.add("hide")};
 document.body.appendChild($("ctl"));   // hors des cartes : plein ecran quoi qu'il arrive
 var on=false,rid=null,seq=-1,frameT=null,pingT=null,pad=false,zoom=1,cur={x:.5,y:.5},lastUrl=null,path=null;
 function rpc(k,x,y,d){if(!on||!rid)return;sb.rpc("rose_ctl_send",{p_rose:rid,p_kind:k,p_x:x==null?null:x,p_y:y==null?null:y,p_data:d==null?null:String(d)}).then(function(r){if(r.error)$("ctlState").textContent="Geste refusé : "+r.error.message})}
-function ping(){if(rid)sb.rpc("rose_live_ping",{p_rose:rid,p_on:on})}
+function ping(){if(rid)sb.rpc("rose_live_ping",{p_rose:rid,p_on:on}).then(function(r){if(r.error)$("ctlState").textContent="Contrôle refusé : "+r.error.message})}   // .then : sinon la requete ne part pas
 function frame(){if(!on)return;sb.from("rose_live").select("seq,private,frame_at").eq("rose_id",rid).maybeSingle().then(function(r){
  var d=r.data;if(!on)return;
  if(d&&d.frame_at&&Date.now()-new Date(d.frame_at).getTime()<6000){
