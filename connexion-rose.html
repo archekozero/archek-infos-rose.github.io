@@ -553,6 +553,7 @@ function frame(){if(!on)return;var t0=Date.now();sb.rpc("rose_live_get",{p_rose:
  if(!on)return;
  if(r.error){$("ctlState").textContent="Erreur : "+r.error.message;return}
  var d=r.data;if(typeof d==="string"){try{d=JSON.parse(d)}catch(e){d=null}}
+ if(d&&d.refused){$("ctlWait").textContent="Le contrôle à distance est désactivé sur ce PC. Pour l’autoriser : Réglages de Rose → page Téléphone → « Contrôle du PC à distance : oui ».";$("ctlWait").classList.remove("hide");$("ctlState").textContent="Refusé par le PC";return}
  if(d&&d.seq!==lastSeq){lastSeq=d.seq;seenAt=Date.now()}            // l'horloge du telephone peut etre decalee : on se fie au compteur d'images
  if(d&&seenAt&&Date.now()-seenAt<6000){
   if(d.private){$("ctlWait").textContent="Fenêtre privée devant (mot de passe, banque…) : l’image est masquée. Tes gestes marchent toujours.";$("ctlWait").classList.remove("hide");$("ctlState").textContent="Connecté · image masquée"}
