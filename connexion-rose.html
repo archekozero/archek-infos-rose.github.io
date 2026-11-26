@@ -560,7 +560,7 @@ function frame(){if(!on)return;var t0=Date.now();sb.rpc("rose_live_get",{p_rose:
   else if(d.img&&d.seq!==seq){seq=d.seq;var im=new Image();im.onload=function(){if(!on)return;$("ctlImg").src=im.src;$("ctlWait").classList.add("hide");$("ctlState").textContent="Connecté · en direct"};
    im.onerror=function(){$("ctlState").textContent="Image illisible, j'attends la suivante…"};im.src="data:image/jpeg;base64,"+d.img}
  }else{$("ctlState").textContent="En attente du PC…"}
-}).catch(function(e){$("ctlState").textContent="Erreur réseau, je réessaie…"}).finally(function(){if(on)frameT=setTimeout(frame,Math.max(80,300-(Date.now()-t0)))})}
+}).catch(function(e){$("ctlState").textContent="Erreur réseau, je réessaie…"}).finally(function(){if(on)frameT=setTimeout(frame,Math.max(40,150-(Date.now()-t0)))})}
 function rel(ev){var b=$("ctlImg").getBoundingClientRect();if(!b.width)return null;
  if($("ctl").classList.contains("rot")){return{x:Math.min(1,Math.max(0,(ev.clientY-b.top)/b.height)),y:Math.min(1,Math.max(0,1-(ev.clientX-b.left)/b.width))}}   // image tournee de 90 degres
  return{x:Math.min(1,Math.max(0,(ev.clientX-b.left)/b.width)),y:Math.min(1,Math.max(0,(ev.clientY-b.top)/b.height))}}
@@ -574,7 +574,7 @@ scr.addEventListener("pointerdown",function(ev){if(!ev.isPrimary)return;var p=re
 scr.addEventListener("pointermove",function(ev){if(!down||!ev.isPrimary)return;var dx=ev.clientX-down.x,dy=ev.clientY-down.y;
  if(Math.abs(dx)+Math.abs(dy)>10)moved=true;
  if(pad&&moved){var b=$("ctlImg").getBoundingClientRect();cur.x=Math.min(1,Math.max(0,down.cx+dx/b.width*1.6));cur.y=Math.min(1,Math.max(0,down.cy+dy/b.height*1.6));curShow();
-  var t=Date.now();if(t-lastMove>140){lastMove=t;rpc("move",cur.x,cur.y)}}});
+  var t=Date.now();if(t-lastMove>90){lastMove=t;rpc("move",cur.x,cur.y)}}});
 scr.addEventListener("pointerup",function(ev){if(!down||!ev.isPrimary)return;clearTimeout(longT);var d=down;down=null;
  if(pad&&moved){rpc("move",cur.x,cur.y);return}
  if(moved)return;                                   // c'etait un defilement de l'image zoomee
