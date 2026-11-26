@@ -239,7 +239,17 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
 <a class="pn-back" href="./">← retour à la bêta</a>
 <span class="sx-tag">// Journal des transmissions</span>
 <h1 class="sx" data-text="Patch notes">Patch notes</h1>
-<p class="lead">Tout ce qui a changé dans Rose depuis l’ouverture de la bêta, version par version. Version en ligne : <strong>Rose <span class="rv">2.3.12</span></strong>, elle se met à jour toute seule.</p>
+<p class="lead">Tout ce qui a changé dans Rose depuis l’ouverture de la bêta, version par version. Version en ligne : <strong>Rose <span class="rv">2.3.13</span></strong>, elle se met à jour toute seule.</p>
+<section class="card pn"><h2>Rose 2.3.13 <span class="pn-date">26 novembre</span></h2><h3 class="pn-h pn-hn">Nouveau</h3><ul class="news pn-n">
+<li><strong>Sourdine</strong> : Rose reste à l’écran mais n’écoute plus le micro (son étoile devient grise). Clic droit → « Sourdine », Réglages page 1, « Rose, sourdine », ou depuis le téléphone (« sourdine » / « réactive le micro »). Gardée au redémarrage.</li>
+<li><strong>Contrôle à distance : Rose va là où tu touches</strong> et clique avec son animation (double-clic avec étincelles).</li>
+<li><strong>Contrôle à distance à autoriser</strong> : Réglages de Rose → page Téléphone → « Contrôle du PC à distance : oui ». Désactivé par défaut ; le téléphone te dit où l’activer.</li>
+<li><strong>Plus fluide</strong> : jusqu’à ~6 images par seconde, écran immobile pas renvoyé, gestes relevés deux fois plus souvent. Mode <strong>plein écran</strong> sur le téléphone, avec les boutons dans le bon sens.</li>
+</ul><h3 class="pn-h pn-hf">Corrigé</h3><ul class="news pn-f">
+<li><strong>« arrête la musique »</strong> marche même quand le son vient d’une autre appli (YouTube, navigateur…) ou quand les boutons de Spotify ne sont pas à jour.</li>
+<li>« arrêtez / arrêter / coupez la musique » sont compris.</li>
+<li>Micro réglé à la main : il ne sature plus ta voix (« rousse » au lieu de « Rose »).</li>
+</ul></section>
 <section class="card pn"><h2>Rose 2.3.12 <span class="pn-date">26 novembre</span></h2><h3 class="pn-h pn-hn">Nouveau</h3><ul class="news pn-n">
 <li><strong>Contrôle du PC depuis ton téléphone</strong> : dans la web app, « Contrôler le PC ». L’écran en direct, <strong>Toucher direct</strong> (Rose clique là où tu touches) ou <strong>Pavé tactile</strong>, clavier, défilement, zoom, grille et un mode <strong>plein écran</strong>. Une fenêtre privée (mot de passe, banque) n’est jamais montrée, et « Rose, arrête le contrôle » coupe tout.</li>
 <li><strong>« Rose, ferme Discord »</strong> : ferme les fenêtres d’une appli (comme la croix). Aussi « ferme cette fenêtre » et « ferme l’onglet ». Elle ne ferme rien si elle n’est pas sûre d’avoir bien entendu.</li>
@@ -427,8 +437,8 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
     raf = requestAnimationFrame(sky);
     // texte du terminal
     var term = g.querySelector('.sx-term');
-    var TL = ['ROSE-OS v' + (window.ROSE_V || '2.3.12') + '  —  (c) 2026', '', 'Test mémoire ........ 640K OK', 'Chargement de ROSE .. OK',
-              'Canal ............... BÊTA SECRÈTE', 'Invitation .......... jeune rose ✓', 'Mise à jour ......... ' + (window.ROSE_V || '2.3.12'), '', '> acceder_a_la_beta'];
+    var TL = ['ROSE-OS v' + (window.ROSE_V || '2.3.13') + '  —  (c) 2026', '', 'Test mémoire ........ 640K OK', 'Chargement de ROSE .. OK',
+              'Canal ............... BÊTA SECRÈTE', 'Invitation .......... jeune rose ✓', 'Mise à jour ......... ' + (window.ROSE_V || '2.3.13'), '', '> acceder_a_la_beta'];
     var full = TL.join('\n'), n = 0, closed = false;
     var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'sx-enter da-keep'; btn.textContent = '[ ENTRER DANS LA BÊTA ]';
     var hint = document.createElement('span'); hint.className = 'sx-hint'; hint.textContent = 'clique sur le bouton  ▶';
