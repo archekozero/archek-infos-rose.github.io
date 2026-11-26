@@ -239,7 +239,10 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
 <a class="pn-back" href="./">← retour à la bêta</a>
 <span class="sx-tag">// Journal des transmissions</span>
 <h1 class="sx" data-text="Patch notes">Patch notes</h1>
-<p class="lead">Tout ce qui a changé dans Rose depuis l’ouverture de la bêta, version par version. Version en ligne : <strong>Rose <span class="rv">2.3.15</span></strong>, elle se met à jour toute seule.</p>
+<p class="lead">Tout ce qui a changé dans Rose depuis l’ouverture de la bêta, version par version. Version en ligne : <strong>Rose <span class="rv">2.3.16</span></strong>, elle se met à jour toute seule.</p>
+<section class="card pn"><h2>Rose 2.3.16 <span class="pn-date">26 novembre</span></h2><h3 class="pn-h pn-hc">Corrigé</h3><ul class="news pn-c">
+<li><strong>Micro en appel</strong> : avec « Isoler ma voix », ta voix arrivait propre mais trop faible. Rose la monte maintenant plus fort : « Rose » est bien mieux reconnu pendant un appel.</li>
+</ul></section>
 <section class="card pn"><h2>Rose 2.3.15 <span class="pn-date">26 novembre</span></h2><h3 class="pn-h pn-hn">Nouveau</h3><ul class="news pn-n">
 <li><strong>Isoler ma voix 🎧</strong> : Windows retire de ton micro le son qui sort de tes haut-parleurs (la voix de tes amis en appel, la musique, les vidéos). Rose entend surtout toi. Allumé par défaut, dans Réglages &gt; Micro. Si ton PC ne le permet pas, Rose reprend le micro normal toute seule.</li>
 <li><strong>Ctrl + Alt + R</strong> : Rose t’écoute tout de suite, sans dire « Rose ». Pratique en appel ou dans le bruit.</li>
@@ -460,8 +463,8 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
     raf = requestAnimationFrame(sky);
     // texte du terminal
     var term = g.querySelector('.sx-term');
-    var TL = ['ROSE-OS v' + (window.ROSE_V || '2.3.15') + '  —  (c) 2026', '', 'Test mémoire ........ 640K OK', 'Chargement de ROSE .. OK',
-              'Canal ............... BÊTA SECRÈTE', 'Invitation .......... jeune rose ✓', 'Mise à jour ......... ' + (window.ROSE_V || '2.3.15'), '', '> acceder_a_la_beta'];
+    var TL = ['ROSE-OS v' + (window.ROSE_V || '2.3.16') + '  —  (c) 2026', '', 'Test mémoire ........ 640K OK', 'Chargement de ROSE .. OK',
+              'Canal ............... BÊTA SECRÈTE', 'Invitation .......... jeune rose ✓', 'Mise à jour ......... ' + (window.ROSE_V || '2.3.16'), '', '> acceder_a_la_beta'];
     var full = TL.join('\n'), n = 0, closed = false;
     var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'sx-enter da-keep'; btn.textContent = '[ ENTRER DANS LA BÊTA ]';
     var hint = document.createElement('span'); hint.className = 'sx-hint'; hint.textContent = 'clique sur le bouton  ▶';
