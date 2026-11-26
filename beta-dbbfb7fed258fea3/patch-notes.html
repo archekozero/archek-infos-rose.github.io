@@ -239,7 +239,23 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
 <a class="pn-back" href="./">← retour à la bêta</a>
 <span class="sx-tag">// Journal des transmissions</span>
 <h1 class="sx" data-text="Patch notes">Patch notes</h1>
-<p class="lead">Tout ce qui a changé dans Rose depuis l’ouverture de la bêta, version par version. Version en ligne : <strong>Rose <span class="rv">2.3.14</span></strong>, elle se met à jour toute seule.</p>
+<p class="lead">Tout ce qui a changé dans Rose depuis l’ouverture de la bêta, version par version. Version en ligne : <strong>Rose <span class="rv">2.3.15</span></strong>, elle se met à jour toute seule.</p>
+<section class="card pn"><h2>Rose 2.3.15 <span class="pn-date">26 novembre</span></h2><h3 class="pn-h pn-hn">Nouveau</h3><ul class="news pn-n">
+<li><strong>Isoler ma voix 🎧</strong> : Windows retire de ton micro le son qui sort de tes haut-parleurs (la voix de tes amis en appel, la musique, les vidéos). Rose entend surtout toi. Allumé par défaut, dans Réglages &gt; Micro. Si ton PC ne le permet pas, Rose reprend le micro normal toute seule.</li>
+<li><strong>Ctrl + Alt + R</strong> : Rose t’écoute tout de suite, sans dire « Rose ». Pratique en appel ou dans le bruit.</li>
+<li><strong>Les sons baissent quand elle t’écoute</strong> : appel Discord, Spotify, YouTube, jeux… chaque son baisse de 25 points, puis revient comme avant.</li>
+<li><strong>Mode appel</strong> : quand Discord ou Teams utilisent ton micro, Rose tend plus l’oreille pour « Rose », et te prévient si Discord a baissé ton micro dans Windows.</li>
+<li><strong>Rose déplace tes fenêtres elle-même</strong> : « mets Chrome à gauche », elle attrape la fenêtre et la tire en marchant. « Mets-la sur l’autre écran », elle l’y emmène. Marche sur chaque écran.</li>
+<li><strong>Rose ferme à la main</strong> : « ferme Discord », elle marche jusqu’à la croix.</li>
+<li><strong>Hiver ❄️</strong> : de la neige qui tombe doucement sur tes écrans et s’accumule sur tes fenêtres et en bas de l’écran (Rose se pose dessus). « Rose, fais un bonhomme de neige » : elle roule les boules, les empile et lui met un bonnet. « Lance une boule de neige » (elle en lance aussi toute seule de temps en temps). « Enlève la neige » pour la couper.</li>
+<li><strong>Calendrier de l’Avent 🎁</strong> : du 1er au 24 décembre, une petite surprise par jour.</li>
+<li><strong>Tutoriel</strong> avec un test du micro guidé, et « Rose, rapport micro » écrit un petit rapport sur ton Bureau pour m’aider si elle t’entend mal.</li>
+</ul><h3 class="pn-h pn-hc">Corrigé</h3><ul class="news pn-c">
+<li>Le son de ton micro est plus propre : Rose prend le bon côté de ton micro (certains micros envoyaient un côté vide ou inversé qui effaçait ta voix) et filtre le souffle.</li>
+<li>« J’aime bien » like le titre, même quand Spotify est caché.</li>
+<li>Le mode silencieux est gardé quand tu fermes et rouvres Rose. « Rose, ne pas déranger » / « tu peux me déranger ».</li>
+<li>Un mot qui ressemble au début d’un nom d’appli (« comment » → « command prompt ») n’ouvre plus rien sans « ouvre ».</li>
+</ul></section>
 <section class="card pn"><h2>Rose 2.3.14 <span class="pn-date">26 novembre</span></h2><h3 class="pn-h pn-hn">Nouveau</h3><ul class="news pn-n">
 <li><strong>Tenue de Noël 🎄</strong> : du 1er décembre au 6 janvier, Rose porte un costume de Père Noël (bonnet, chapeau en fourrure, habit rouge) sur toutes ses images, avec de la neige autour d’elle. « Rose, mets ton bonnet » / « enlève ton bonnet » pour le changer tout de suite.</li>
 <li><strong>Fenêtres à la voix</strong> : « mets Chrome à gauche / à droite », « mets Discord sur l’autre écran », « agrandis Spotify », « réduis cette fenêtre », « réduis tout ». Marche avec deux écrans.</li>
@@ -444,8 +460,8 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
     raf = requestAnimationFrame(sky);
     // texte du terminal
     var term = g.querySelector('.sx-term');
-    var TL = ['ROSE-OS v' + (window.ROSE_V || '2.3.14') + '  —  (c) 2026', '', 'Test mémoire ........ 640K OK', 'Chargement de ROSE .. OK',
-              'Canal ............... BÊTA SECRÈTE', 'Invitation .......... jeune rose ✓', 'Mise à jour ......... ' + (window.ROSE_V || '2.3.14'), '', '> acceder_a_la_beta'];
+    var TL = ['ROSE-OS v' + (window.ROSE_V || '2.3.15') + '  —  (c) 2026', '', 'Test mémoire ........ 640K OK', 'Chargement de ROSE .. OK',
+              'Canal ............... BÊTA SECRÈTE', 'Invitation .......... jeune rose ✓', 'Mise à jour ......... ' + (window.ROSE_V || '2.3.15'), '', '> acceder_a_la_beta'];
     var full = TL.join('\n'), n = 0, closed = false;
     var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'sx-enter da-keep'; btn.textContent = '[ ENTRER DANS LA BÊTA ]';
     var hint = document.createElement('span'); hint.className = 'sx-hint'; hint.textContent = 'clique sur le bouton  ▶';
