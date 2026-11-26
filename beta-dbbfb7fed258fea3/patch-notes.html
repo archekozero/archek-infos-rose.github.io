@@ -239,7 +239,19 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
 <a class="pn-back" href="./">← retour à la bêta</a>
 <span class="sx-tag">// Journal des transmissions</span>
 <h1 class="sx" data-text="Patch notes">Patch notes</h1>
-<p class="lead">Tout ce qui a changé dans Rose depuis l’ouverture de la bêta, version par version. Version en ligne : <strong>Rose <span class="rv">2.3.9</span></strong>, elle se met à jour toute seule.</p>
+<p class="lead">Tout ce qui a changé dans Rose depuis l’ouverture de la bêta, version par version. Version en ligne : <strong>Rose <span class="rv">2.3.12</span></strong>, elle se met à jour toute seule.</p>
+<section class="card pn"><h2>Rose 2.3.12 <span class="pn-date">26 novembre</span></h2><h3 class="pn-h pn-hn">Nouveau</h3><ul class="news pn-n">
+<li><strong>Contrôle du PC depuis ton téléphone</strong> : dans la web app, « Contrôler le PC ». L’écran en direct, <strong>Toucher direct</strong> (Rose clique là où tu touches) ou <strong>Pavé tactile</strong>, clavier, défilement, zoom, grille et un mode <strong>plein écran</strong>. Une fenêtre privée (mot de passe, banque) n’est jamais montrée, et « Rose, arrête le contrôle » coupe tout.</li>
+<li><strong>« Rose, ferme Discord »</strong> : ferme les fenêtres d’une appli (comme la croix). Aussi « ferme cette fenêtre » et « ferme l’onglet ». Elle ne ferme rien si elle n’est pas sûre d’avoir bien entendu.</li>
+<li><strong>Une oreille rien que pour « Rose »</strong> (aussi « hey Rose », « ok Rose ») : elle te reconnaît même quand une vidéo parle à côté. Son étoile grossit et clignote quand elle t’entend, même en mode silencieux.</li>
+<li><strong>Micro réglé tout seul</strong> : trop fort, elle baisse ; trop bas, elle monte. Ou à la main dans les Réglages (page 1, « Volume micro ») et à la voix : « monte le micro », « baisse le micro », « micro automatique ».</li>
+<li><strong>« Rose, teste le micro »</strong> (ou clic droit → Tester le micro) : elle te dit si ton micro est trop faible, trop fort ou parfait.</li>
+</ul><h3 class="pn-h pn-hf">Corrigé</h3><ul class="news pn-f">
+<li>« suivant » ne fait plus surgir Spotify.</li>
+<li>« musique » mal entendu ne coupe plus ta musique : elle te demande de le redire.</li>
+<li>« crème » est compris comme Chrome, et « oui » / « non » ne sont plus jamais appris comme des ordres.</li>
+<li>PC presque plein de mémoire : elle prend son petit modèle de voix pour ne pas tout ralentir.</li>
+</ul></section>
 <section class="card pn"><h2>Rose 2.3.9 <span class="pn-date">22 novembre</span></h2><h3 class="pn-h pn-hf">Corrigé</h3><ul class="news pn-f"><li><strong>Spotify n’est plus bloqué</strong> : quand Rose lançait une musique, elle renvoyait Spotify derrière pendant quelques secondes, même si tu cliquais dessus. Maintenant elle le lâche dès que tu touches la souris ou le clavier, et ne touche plus à Spotify s’il était déjà ouvert.</li><li><strong>La musique ne reste plus toute basse</strong> : si Rose plantait ou était fermée pendant qu’elle t’écoutait, Spotify restait à 20 %. Elle remet maintenant le volume d’avant, à la fermeture comme au démarrage.</li></ul></section>
 <section class="card pn"><h2>Rose 2.3.8 <span class="pn-date">22 novembre</span></h2><h3 class="pn-h pn-hf">Corrigé</h3><ul class="news pn-f"><li>Demander un vocal Discord (par la voix, le clic droit ou le bouton des Réglages) pouvait faire <strong>disparaître Rose</strong> : toutes ces entrées sont maintenant fermées, elle répond simplement qu’elle ne va plus dans les appels.</li></ul><h3 class="pn-h pn-hn">Nouveau</h3><ul class="news pn-n"><li><strong>Elle demande avant de se mettre à jour</strong> : quand une nouvelle version sort, Rose ouvre cette page de patch notes et te dit « J’ai une mise à jour. Tu veux que je la télécharge ? ». Réponds « oui » ou « non ».</li></ul></section>
 <section class="card pn"><h2>Rose 2.3.7 <span class="pn-date">22 novembre</span></h2><h3 class="pn-h pn-hf">Corrigé</h3><ul class="news pn-f"><li>« Rose, apprends » prenait « euh oui » pour une commande : elle redemande maintenant si la réponse n’est pas une commande.</li><li>Le relevé de mémoire du journal affichait 0 Mo.</li></ul><h3 class="pn-h pn-hs">Retiré</h3><ul class="news pn-s"><li>Rose et Rosie <strong>ne rejoignent plus les salons vocaux Discord</strong> (« rejoins l’appel », « qui est en vocal », « rejoins-moi »). Tout le reste de Rosie marche comme avant : /rose, messages, jeux, demandes à accepter sur la web app.</li></ul></section>
@@ -415,8 +427,8 @@ h1.sx::after{-webkit-text-fill-color:#ff2d6a;color:#ff2d6a;animation:sx-rgb2 3.2
     raf = requestAnimationFrame(sky);
     // texte du terminal
     var term = g.querySelector('.sx-term');
-    var TL = ['ROSE-OS v' + (window.ROSE_V || '2.3.9') + '  —  (c) 2026', '', 'Test mémoire ........ 640K OK', 'Chargement de ROSE .. OK',
-              'Canal ............... BÊTA SECRÈTE', 'Invitation .......... jeune rose ✓', 'Mise à jour ......... ' + (window.ROSE_V || '2.3.9'), '', '> acceder_a_la_beta'];
+    var TL = ['ROSE-OS v' + (window.ROSE_V || '2.3.12') + '  —  (c) 2026', '', 'Test mémoire ........ 640K OK', 'Chargement de ROSE .. OK',
+              'Canal ............... BÊTA SECRÈTE', 'Invitation .......... jeune rose ✓', 'Mise à jour ......... ' + (window.ROSE_V || '2.3.12'), '', '> acceder_a_la_beta'];
     var full = TL.join('\n'), n = 0, closed = false;
     var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'sx-enter da-keep'; btn.textContent = '[ ENTRER DANS LA BÊTA ]';
     var hint = document.createElement('span'); hint.className = 'sx-hint'; hint.textContent = 'clique sur le bouton  ▶';
